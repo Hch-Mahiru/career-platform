@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>岗位详情 - 职引未来</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">职引未来</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">首页</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/internships">实习岗位</a></li>
+                    <li class="nav-item" id="navProfile" style="display: none;"><a class="nav-link" href="/profile">个人中心</a></li>
+                    <li class="nav-item" id="navLogin"><a class="nav-link" href="/login">登录</a></li>
+                    <li class="nav-item" id="navLogout" style="display: none;"><a class="nav-link" href="#" onclick="logout()">退出</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/internships">实习岗位</a></li>
+                        <li class="breadcrumb-item active">岗位详情</li>
+                    </ol>
+                </nav>
+
+                <div id="loading" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                </div>
+
+                <div id="detailContent" style="display: none;">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 id="jobTitle">岗位标题</h2>
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6" id="companyName">公司名称</span>
+                                <span class="badge bg-success fs-6" id="salary">薪资</span>
+                                <span class="badge bg-secondary" id="location">地点</span>
+                                <span class="badge bg-info" id="jobType">类型</span>
+                            </div>
+                            <div class="text-muted small">
+                                截止日期：<span id="deadline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">公司简介</h5>
+                        </div>
+                        <div class="card-body">
+                            <p id="companyDesc"></p>
+                            <p><strong>行业：</strong><span id="industry"></span></p>
+                            <p><strong>规模：</strong><span id="scale"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">岗位职责</h5>
+                        </div>
+                        <div class="card-body">
+                            <p id="jobDescription" style="white-space: pre-line;"></p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">任职要求</h5>
+                        </div>
+                        <div class="card-body">
+                            <p id="requirements" style="white-space: pre-line;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">申请该职位</h5>
+                        <p class="text-muted small">申请职位前请确保已完善简历</p>
+                        <button id="applyBtn" class="btn btn-primary w-100 btn-lg" onclick="applyJob()">
+                            立即投递
+                        </button>
+                        <button class="btn btn-outline-secondary w-100 mt-2" onclick="window.history.back()">
+                            返回列表
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">求职小贴士</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>仔细阅读岗位描述和要求</li>
+                            <li>针对性修改简历，突出相关技能</li>
+                            <li>准备好作品集或项目经历</li>
+                            <li>提前了解公司和行业背景</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        const internshipId = window.location.pathname.split('/').pop();
+        let internshipData = null;
+
+        // 加载岗位详情
+        async function loadDetail() {
+            try {
+                const response = await fetch(`/api/internships/${internshipId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    internshipData = data.data;
+                    renderDetail(data.data);
+                } else {
+                    document.getElementById('loading').innerHTML = '<p class="text-danger">岗位不存在</p>';
+                }
+            } catch (error) {
+                document.getElementById('loading').innerHTML = '<p class="text-danger">加载失败</p>';
+            }
+        }
+
+        // 渲染详情
+        function renderDetail(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+
+            document.getElementById('jobTitle').textContent = data.title;
+            document.getElementById('companyName').textContent = data.company_name;
+            document.getElementById('salary').textContent = data.salary;
+            document.getElementById('location').textContent = data.location;
+            document.getElementById('jobType').textContent = data.type;
+            document.getElementById('deadline').textContent = data.deadline;
+
+            document.getElementById('companyDesc').textContent = data.company_desc || '暂无公司介绍';
+            document.getElementById('industry').textContent = data.industry || '未知';
+            document.getElementById('scale').textContent = data.scale || '未知';
+
+            document.getElementById('jobDescription').textContent = data.description || '暂无岗位描述';
+            document.getElementById('requirements').textContent = data.requirements || '暂无任职要求';
+        }
+
+        // 投递简历
+        async function applyJob() {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                alert('请先登录后再投递简历');
+                window.location.href = '/login';
+                return;
+            }
+
+            if (!internshipData) return;
+
+            if (!confirm(`确定要投递 "${internshipData.title}" 这个岗位吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/apply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ internship_id: internshipId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('投递成功！您可以在个人中心的"我的投递"中查看状态');
+                    window.location.href = '/profile';
+                } else {
+                    alert('投递失败：' + data.message);
+                }
+            } catch (error) {
+                alert('投递失败，请稍后重试');
+            }
+        }
+
+        loadDetail();
+    </script>
+</body>
+</html>

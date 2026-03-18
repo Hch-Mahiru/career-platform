@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业测评 - 职引未来</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">职引未来</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/internships">实习岗位</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/articles">经验分享</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/assessment">职业测评</a></li>
+                    <li class="nav-item" id="navProfile" style="display: none;"><a class="nav-link" href="/profile">个人中心</a></li>
+                    <li class="nav-item" id="navLogin"><a class="nav-link" href="/login">登录</a></li>
+                    <li class="nav-item" id="navLogout" style="display: none;"><a class="nav-link" href="#" onclick="logout()">退出</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <!-- 介绍页 -->
+        <div id="introPage">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header text-center bg-primary text-white">
+                            <h3>霍兰德职业兴趣测试</h3>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">测试介绍</h5>
+                            <p>霍兰德职业兴趣测试（Holland Codes）是由美国心理学家约翰·霍兰德提出的职业兴趣理论。该测试将人的职业兴趣分为六种类型：</p>
+
+                            <div class="row mt-4">
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>R 实用型</h4>
+                                        <p class="small">喜欢动手操作、使用工具和机器</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>I 研究型</h4>
+                                        <p class="small">喜欢思考、分析、解决抽象问题</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>A 艺术型</h4>
+                                        <p class="small">喜欢创作、表达、追求美感</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>S 社会型</h4>
+                                        <p class="small">喜欢帮助他人、与人交流</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>E 企业型</h4>
+                                        <p class="small">喜欢领导、竞争、追求成就</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="type-card">
+                                        <h4>C 常规型</h4>
+                                        <p class="small">喜欢有序、规范、处理数据</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <strong>测试说明：</strong>共 18 道题，请根据您的实际情况选择"是"或"否"。
+                            </div>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-lg px-5" onclick="startTest()">开始测试</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试页 -->
+        <div id="testPage" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>霍兰德职业兴趣测试</span>
+                            <span class="badge bg-primary" id="progressText">1/18</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="progress mb-4">
+                                <div class="progress-bar" id="progressBar" style="width: 5%"></div>
+                            </div>
+
+                            <h5 id="questionText" class="mb-4">题目内容</h5>
+
+                            <div class="d-grid gap-2 d-md-block">
+                                <button class="btn btn-primary btn-lg" onclick="answer(true)">是</button>
+                                <button class="btn btn-outline-secondary btn-lg" onclick="answer(false)">否</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div id="resultPage" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header text-center bg-success text-white">
+                            <h3>测评结果</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <h4>您的职业兴趣代码</h4>
+                                <h1 class="display-1 fw-bold text-primary" id="resultCode">RIA</h1>
+                                <p class="lead" id="resultTypes"></p>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h5>各维度得分</h5>
+                                    <canvas id="scoreChart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>推荐职业方向</h5>
+                                    <div id="careerSuggestions" class="list-group"></div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <strong>温馨提示：</strong> 测评结果仅供参考，实际职业选择还需结合个人能力、价值观和实际情况综合考虑。
+                            </div>
+
+                            <div class="text-center">
+                                <a href="/internships" class="btn btn-primary">查看相关实习岗位</a>
+                                <a href="/profile" class="btn btn-outline-secondary">返回个人中心</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        let questions = [];
+        let answers = {};
+        let currentQuestion = 0;
+        let questionTypes = {};
+
+        // 开始测试
+        async function startTest() {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                if (!confirm('测试需要登录，是否前往登录？')) {
+                    return;
+                }
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/assessments/holland');
+                const data = await response.json();
+
+                if (data.success) {
+                    questions = data.data;
+                    questions.forEach(q => {
+                        questionTypes[q.id] = q.type;
+                    });
+
+                    document.getElementById('introPage').style.display = 'none';
+                    document.getElementById('testPage').style.display = 'block';
+                    showQuestion();
+                }
+            } catch (error) {
+                alert('加载题目失败');
+            }
+        }
+
+        // 显示题目
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionText').textContent = `${q.id}. ${q.question}`;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('progressBar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+        }
+
+        // 回答问题
+        function answer(isYes) {
+            const q = questions[currentQuestion];
+            answers[q.id] = isYes;
+
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                submitTest();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // 提交测试
+        async function submitTest() {
+            try {
+                const response = await fetch('/api/assessments/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        answers: answers,
+                        question_types: questionTypes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult(data.data);
+                }
+            } catch (error) {
+                alert('提交失败');
+            }
+        }
+
+        // 显示结果
+        function showResult(result) {
+            document.getElementById('testPage').style.display = 'none';
+            document.getElementById('resultPage').style.display = 'block';
+
+            document.getElementById('resultCode').textContent = result.code;
+            document.getElementById('resultTypes').textContent = result.types.join(' > ');
+
+            // 绘制图表
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['R 实用型', 'I 研究型', 'A 艺术型', 'S 社会型', 'E 企业型', 'C 常规型'],
+                    datasets: [{
+                        label: '得分',
+                        data: [result.scores.R, result.scores.I, result.scores.A, result.scores.S, result.scores.E, result.scores.C],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 206, 86)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)',
+                            'rgb(255, 159, 64)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 3
+                        }
+                    }
+                }
+            });
+
+            // 显示推荐职业
+            const suggestionsContainer = document.getElementById('careerSuggestions');
+            let html = '';
+            result.suggestions.forEach((suggestion, index) => {
+                html += `<div class="list-group-item"><strong>${result.types[index].split(' ')[0]}：</strong>${suggestion}</div>`;
+            });
+            suggestionsContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建简历 - 职引未来</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">职引未来</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/internships">实习岗位</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile">个人中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">创建我的简历</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-success" id="successMsg" style="display: none;"></div>
+
+                        <form id="resumeForm">
+                            <h5 class="mb-3">基本信息</h5>
+                            <div class="mb-3">
+                                <label class="form-label">姓名</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">求职意向</label>
+                                <input type="text" class="form-control" id="objective" placeholder="例如：前端开发实习生">
+                            </div>
+
+                            <h5 class="mb-3 mt-4">教育背景</h5>
+                            <div class="mb-3">
+                                <label class="form-label">学校 - 专业 - 年级</label>
+                                <textarea class="form-control" id="education" rows="3" placeholder="例如：南京大学 计算机科学与技术 本科 2024 级"></textarea>
+                            </div>
+
+                            <h5 class="mb-3 mt-4">技能特长</h5>
+                            <div class="mb-3">
+                                <label class="form-label">请列出你掌握的技能</label>
+                                <textarea class="form-control" id="skills" rows="3" placeholder="例如：熟悉 Java、Python 编程语言；了解 Spring Boot 框架；熟练使用 MySQL 数据库"></textarea>
+                            </div>
+
+                            <h5 class="mb-3 mt-4">实践经历</h5>
+                            <div class="mb-3">
+                                <label class="form-label">实习/项目经历</label>
+                                <textarea class="form-control" id="experience" rows="4" placeholder="描述你的实习经历或参与的项目..."></textarea>
+                            </div>
+
+                            <h5 class="mb-3 mt-4">获奖情况</h5>
+                            <div class="mb-3">
+                                <label class="form-label">奖学金/竞赛获奖</label>
+                                <textarea class="form-control" id="awards" rows="2" placeholder="例如：2025 年国家励志奖学金、江苏省程序设计大赛二等奖..."></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">保存简历</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/profile'">返回</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">简历模板</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">选择模板</label>
+                            <select class="form-select" id="templateId">
+                                <option value="1">简洁模板</option>
+                                <option value="2">商务模板</option>
+                                <option value="3">创意模板</option>
+                            </select>
+                        </div>
+                        <div class="template-preview border rounded p-3 text-center">
+                            <div class="template-box">
+                                <div class="template-header bg-primary text-white p-2">简历</div>
+                                <div class="template-body bg-light p-3">
+                                    <small>基本信息</small><hr>
+                                    <small>教育背景</small><hr>
+                                    <small>技能特长</small><hr>
+                                    <small>实践经历</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h6>简历小贴士</h6>
+                            <ul class="small text-muted">
+                                <li>突出与岗位相关的技能</li>
+                                <li>用数据和成果说话</li>
+                                <li>保持简洁，控制在 1-2 页</li>
+                                <li>检查错别字和格式</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        // 页面加载时检查登录状态
+        const user = localStorage.getItem('user');
+        if (!user) {
+            window.location.href = '/login';
+        }
+
+        // 加载已有简历
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/resume');
+                const data = await response.json();
+                if (data.success && data.data) {
+                    const resume = data.data;
+                    document.getElementById('name').value = resume.name || '';
+                    document.getElementById('objective').value = resume.objective || '';
+                    document.getElementById('education').value = resume.education || '';
+                    document.getElementById('skills').value = resume.skills || '';
+                    document.getElementById('experience').value = resume.experience || '';
+                    document.getElementById('awards').value = resume.awards || '';
+                    document.getElementById('templateId').value = resume.template_id || 1;
+                }
+            } catch (error) {
+                console.error('加载简历失败');
+            }
+        });
+
+        // 保存简历
+        document.getElementById('resumeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const resumeData = {
+                name: document.getElementById('name').value,
+                objective: document.getElementById('objective').value,
+                education: document.getElementById('education').value,
+                skills: document.getElementById('skills').value,
+                experience: document.getElementById('experience').value,
+                awards: document.getElementById('awards').value,
+                template_id: parseInt(document.getElementById('templateId').value)
+            };
+
+            try {
+                const response = await fetch('/api/resume', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(resumeData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('successMsg').textContent = '简历保存成功！';
+                    document.getElementById('successMsg').style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 1500);
+                } else {
+                    alert('保存失败：' + data.message);
+                }
+            } catch (error) {
+                alert('保存失败，请稍后重试');
+            }
+        });
+    </script>
+</body>
+</html>

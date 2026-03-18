@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 职引未来</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4">用户注册</h2>
+
+                        <div class="alert alert-danger" id="errorMsg" style="display: none;"></div>
+                        <div class="alert alert-success" id="successMsg" style="display: none;"></div>
+
+                        <form id="registerForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">用户名 *</label>
+                                    <input type="text" class="form-control" id="username" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">密码 *</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">邮箱</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">手机号</label>
+                                    <input type="tel" class="form-control" id="phone">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">注册类型 *</label>
+                                <select class="form-select" id="role" required onchange="toggleFields()">
+                                    <option value="student">学生</option>
+                                    <option value="enterprise">企业</option>
+                                </select>
+                            </div>
+
+                            <div id="studentFields">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">学校</label>
+                                        <input type="text" class="form-control" id="school" placeholder="例如：南京大学">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">专业</label>
+                                        <input type="text" class="form-control" id="major" placeholder="例如：计算机科学">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">年级</label>
+                                    <select class="form-select" id="grade">
+                                        <option value="2026">2026 级（大一）</option>
+                                        <option value="2025">2025 级（大二）</option>
+                                        <option value="2024">2024 级（大三）</option>
+                                        <option value="2023">2023 级（大四）</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="enterpriseFields" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">企业名称</label>
+                                    <input type="text" class="form-control" id="companyName" placeholder="请输入企业全称">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">注册</button>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <p>已有账号？<a href="/login">立即登录</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleFields() {
+            const role = document.getElementById('role').value;
+            if (role === 'student') {
+                document.getElementById('studentFields').style.display = 'block';
+                document.getElementById('enterpriseFields').style.display = 'none';
+            } else {
+                document.getElementById('studentFields').style.display = 'none';
+                document.getElementById('enterpriseFields').style.display = 'block';
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const role = document.getElementById('role').value;
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                role: role
+            };
+
+            if (role === 'student') {
+                data.school = document.getElementById('school').value;
+                data.major = document.getElementById('major').value;
+                data.grade = document.getElementById('grade').value;
+            } else {
+                data.companyName = document.getElementById('companyName').value;
+            }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('successMsg').textContent = '注册成功！3 秒后跳转到登录页...';
+                    document.getElementById('successMsg').style.display = 'block';
+                    document.getElementById('errorMsg').style.display = 'none';
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    document.getElementById('errorMsg').textContent = result.message;
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = '注册失败，请稍后重试';
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

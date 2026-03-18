@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大学生职业规划与实习对接平台</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">职引未来</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/internships">实习岗位</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/articles">经验分享</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/assessment">职业测评</a>
+                    </li>
+                    <li class="nav-item" id="navProfile" style="display: none;">
+                        <a class="nav-link" href="/profile">个人中心</a>
+                    </li>
+                    <li class="nav-item" id="navLogin">
+                        <a class="nav-link" href="/login">登录</a>
+                    </li>
+                    <li class="nav-item" id="navRegister">
+                        <a class="nav-link" href="/register">注册</a>
+                    </li>
+                    <li class="nav-item" id="navLogout" style="display: none;">
+                        <a class="nav-link" href="#" onclick="logout()">退出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 轮播图 -->
+    <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="carousel-caption-bg">
+                    <h2>找到你的理想实习</h2>
+                    <p>海量优质实习岗位，助你职场起航</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-caption-bg">
+                    <h2>职业规划测评</h2>
+                    <p>科学评估，发现你的职业潜能</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="carousel-caption-bg">
+                    <h2>学长学姐经验分享</h2>
+                    <p>真实案例，宝贵经验倾囊相授</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="container my-5">
+        <!-- 快速入口 -->
+        <div class="row text-center mb-5">
+            <div class="col-md-3 mb-3">
+                <div class="feature-box">
+                    <div class="feature-icon">📝</div>
+                    <h4>在线简历</h4>
+                    <p>专业模板，快速生成个人简历</p>
+                    <a href="/resume" class="btn btn-outline-primary">立即创建</a>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="feature-box">
+                    <div class="feature-icon">💼</div>
+                    <h4>实习岗位</h4>
+                    <p>精选名企实习，开启职场之路</p>
+                    <a href="/internships" class="btn btn-outline-primary">查看全部</a>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="feature-box">
+                    <div class="feature-icon">📊</div>
+                    <h4>职业测评</h4>
+                    <p>霍兰德测试，探索职业兴趣</p>
+                    <a href="/assessment" class="btn btn-outline-primary">开始测试</a>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="feature-box">
+                    <div class="feature-icon">📚</div>
+                    <h4>经验分享</h4>
+                    <p>学长学姐，倾囊相授宝贵经验</p>
+                    <a href="/articles" class="btn btn-outline-primary">阅读文章</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 热门实习 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">热门实习岗位</h2>
+                <div id="hotInternships"></div>
+            </div>
+        </div>
+
+        <!-- 最新文章 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">最新经验分享</h2>
+                <div id="latestArticles"></div>
+            </div>
+        </div>
+
+        <!-- 数据统计 -->
+        <div class="row text-center">
+            <div class="col-md-3 mb-3">
+                <div class="stat-box">
+                    <h3 id="statCompanies">0</h3>
+                    <p>合作企业</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box">
+                    <h3 id="statInternships">0</h3>
+                    <p>实习岗位</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box">
+                    <h3 id="statStudents">0</h3>
+                    <p>服务学生</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-box">
+                    <h3 id="statArticles">0</h3>
+                    <p>经验分享</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>大学生职业规划与实习对接平台 - 职引未来</p>
+            <p class="text-muted">© 2026 江苏省大学生计算机设计大赛参赛作品</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

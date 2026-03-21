@@ -7,14 +7,18 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from flask_cors import CORS
 import sqlite3
 import hashlib
+import os
 from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'career_platform_secret_key_2026'
 CORS(app)
 
-# 数据库文件路径
-DB_PATH = 'db/career.db'
+# 数据库文件路径（使用绝对路径）
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', 'career.db')
+
+# 确保 db 目录存在
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 # ==================== 数据库初始化 ====================
 def init_db():
@@ -640,20 +644,33 @@ def profile_page():
     """个人中心页"""
     return render_template('profile.html')
 
+# ==================== 应用启动 ====================
+# 在应用启动时初始化数据库
+def before_first_request():
+    """应用启动前初始化数据库"""
+    init_db()
+    insert_sample_data()
+
+# 注册启动钩子
+app.before_request(before_first_request)
+
 if __name__ == '__main__':
     # 初始化数据库
     init_db()
     insert_sample_data()
 
+    # 获取端口（Railway 使用 PORT 环境变量，本地使用 5000）
+    port = int(os.environ.get('PORT', 5000))
+
     # 启动服务器
     print("\n" + "="*50)
     print("大学生职业规划与实习对接平台")
     print("="*50)
-    print("访问地址：http://127.0.0.1:5000")
+    print(f"访问地址：http://0.0.0.0:{port}")
     print("\n测试账号:")
     print("  学生：student1 / 123456")
     print("  企业：hr1 / 123456")
     print("  管理：admin / 123456")
     print("="*50 + "\n")
 
-    app.run(debug=True, port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)

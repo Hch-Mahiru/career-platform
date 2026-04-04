@@ -167,7 +167,7 @@ def insert_sample_data():
     cursor = conn.cursor()
 
     # 检查是否已有数据
-    cursor.execute("SELECT COUNT(*) FROM users")
+    cursor.execute("SELECT COUNT(*) FROM internships")
     if cursor.fetchone()[0] > 0:
         conn.close()
         return

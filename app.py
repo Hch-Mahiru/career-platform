@@ -451,6 +451,27 @@ def register_page():
 
 # ==================== API 接口 ====================
 
+@app.route('/api/reset-data')
+def api_reset_data():
+    """重置数据库数据（仅用于开发/演示环境）"""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # 删除所有数据
+    cursor.execute("DELETE FROM applications")
+    cursor.execute("DELETE FROM internships")
+    cursor.execute("DELETE FROM companies")
+    cursor.execute("DELETE FROM articles")
+    cursor.execute("DELETE FROM users")
+
+    conn.commit()
+    conn.close()
+
+    # 重新插入示例数据
+    insert_sample_data()
+
+    return jsonify({'success': True, 'message': '数据库已重置，示例数据已重新插入'})
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     """用户登录"""

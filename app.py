@@ -5,7 +5,7 @@ Flask 主应用入口
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
-import psycopg
+import sqlite3
 import hashlib
 import os
 from datetime import datetime
@@ -14,23 +14,22 @@ app = Flask(__name__)
 app.secret_key = 'career_platform_secret_key_2026'
 CORS(app)
 
-# 获取数据库连接（使用 Railway PostgreSQL）
-def get_db():
-    """获取数据库连接"""
-    database_url = os.environ.get('DATABASE_URL')
-    conn = psycopg.connect(database_url)
-    return conn
+# 数据库文件路径
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'career.db')
+
+# 确保 db 目录存在
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 # ==================== 数据库初始化 ====================
 def init_db():
     """初始化数据库，创建所有表"""
-    conn = get_db()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     # 用户表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
             email TEXT,
@@ -39,14 +38,14 @@ def init_db():
             school TEXT,
             major TEXT,
             grade TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
     # 企业表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS companies (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             company_name TEXT,
             industry TEXT,
@@ -59,7 +58,7 @@ def init_db():
     # 实习岗位表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS internships (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             company_id INTEGER,
             title TEXT NOT NULL,
             description TEXT,
@@ -69,7 +68,7 @@ def init_db():
             type TEXT,
             deadline DATE,
             status TEXT DEFAULT 'active',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (company_id) REFERENCES companies(id)
         )
     ''')
@@ -77,7 +76,7 @@ def init_db():
     # 简历表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS resumes (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             name TEXT,
             objective TEXT,
@@ -86,8 +85,8 @@ def init_db():
             experience TEXT,
             awards TEXT,
             template_id INTEGER DEFAULT 1,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -95,11 +94,11 @@ def init_db():
     # 投递记录表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS applications (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_id INTEGER,
             internship_id INTEGER,
             status TEXT DEFAULT 'pending',
-            applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (student_id) REFERENCES users(id),
             FOREIGN KEY (internship_id) REFERENCES internships(id)
         )
@@ -108,12 +107,12 @@ def init_db():
     # 职业测评表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS assessments (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             type TEXT,
             result TEXT,
             score TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -121,13 +120,13 @@ def init_db():
     # 经验分享表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             title TEXT NOT NULL,
             content TEXT,
             category TEXT,
             views INTEGER DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -135,13 +134,13 @@ def init_db():
     # 预约记录表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS appointments (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_id INTEGER,
             counselor_id INTEGER,
-            appointment_time TIMESTAMP,
+            appointment_time DATETIME,
             status TEXT DEFAULT 'pending',
             notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (student_id) REFERENCES users(id),
             FOREIGN KEY (counselor_id) REFERENCES users(id)
         )
@@ -158,8 +157,8 @@ def hash_password(password):
 
 def get_db():
     """获取数据库连接"""
-    database_url = os.environ.get('DATABASE_URL')
-    conn = psycopg.connect(database_url)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     return conn
 
 def insert_sample_data():
@@ -191,7 +190,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO users (username, password, email, phone, role, school, major, grade)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', users)
         print("已插入示例用户")
     else:
@@ -201,7 +200,7 @@ def insert_sample_data():
     if not has_companies:
         cursor.executemany('''
             INSERT INTO companies (user_id, company_name, industry, scale, description)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?)
         ''', [
             (4, '阿里巴巴', '互联网', '10000+', '全球知名的电子商务和科技公司'),
             (4, '腾讯科技', '互联网', '10000+', '中国领先的互联网增值服务提供商'),
@@ -257,7 +256,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO internships (company_id, title, description, requirements, salary, location, type, deadline)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', internships)
         print("已插入示例实习岗位")
     else:
@@ -423,7 +422,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO articles (user_id, title, content, category)
-            VALUES (%s, %s, %s, %s)
+            VALUES (?, ?, ?, ?)
         ''', articles)
         print("已插入示例文章")
     else:
@@ -461,7 +460,7 @@ def api_login():
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, hash_password(password)))
+    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hash_password(password)))
     user = cursor.fetchone()
     conn.close()
 
@@ -492,12 +491,12 @@ def api_register():
     try:
         cursor.execute('''
             INSERT INTO users (username, password, email, phone, role, school, major, grade)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (username, hash_password(password), email, phone, role, school, major, grade))
         conn.commit()
         conn.close()
         return jsonify({'success': True, 'message': '注册成功'})
-    except psycopg.errors.UniqueViolation:
+    except sqlite3.IntegrityError:
         conn.close()
         return jsonify({'success': False, 'message': '用户名已存在'}), 400
 
@@ -541,7 +540,7 @@ def get_internship(id):
         SELECT i.*, c.company_name, c.description as company_desc, c.industry, c.scale
         FROM internships i
         JOIN companies c ON i.company_id = c.id
-        WHERE i.id = %s
+        WHERE i.id = ?
     ''', (id,))
     row = cursor.fetchone()
     conn.close()
@@ -564,7 +563,7 @@ def apply_internship():
 
     # 检查是否已投递
     cursor.execute('''
-        SELECT * FROM applications WHERE student_id = %s AND internship_id = %s
+        SELECT * FROM applications WHERE student_id = ? AND internship_id = ?
     ''', (session['user_id'], internship_id))
 
     if cursor.fetchone():
@@ -573,7 +572,7 @@ def apply_internship():
 
     cursor.execute('''
         INSERT INTO applications (student_id, internship_id)
-        VALUES (%s, %s)
+        VALUES (?, ?)
     ''', (session['user_id'], internship_id))
     conn.commit()
     conn.close()
@@ -593,7 +592,7 @@ def get_my_applications():
         FROM applications a
         JOIN internships i ON a.internship_id = i.id
         JOIN companies c ON i.company_id = c.id
-        WHERE a.student_id = %s
+        WHERE a.student_id = ?
         ORDER BY a.applied_at DESC
     ''', (session['user_id'],))
     rows = cursor.fetchall()
@@ -609,7 +608,7 @@ def get_resume():
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM resumes WHERE user_id = %s', (session['user_id'],))
+    cursor.execute('SELECT * FROM resumes WHERE user_id = ?', (session['user_id'],))
     row = cursor.fetchone()
     conn.close()
 
@@ -628,20 +627,20 @@ def save_resume():
     cursor = conn.cursor()
 
     # 检查是否已有简历
-    cursor.execute('SELECT id FROM resumes WHERE user_id = %s', (session['user_id'],))
+    cursor.execute('SELECT id FROM resumes WHERE user_id = ?', (session['user_id'],))
     existing = cursor.fetchone()
 
     if existing:
         cursor.execute('''
-            UPDATE resumes SET name=%s, objective=%s, education=%s, skills=%s, experience=%s, awards=%s, template_id=%s, updated_at=CURRENT_TIMESTAMP
-            WHERE user_id = %s
+            UPDATE resumes SET name=?, objective=?, education=?, skills=?, experience=?, awards=?, template_id=?, updated_at=CURRENT_TIMESTAMP
+            WHERE user_id = ?
         ''', (data.get('name'), data.get('objective'), data.get('education'),
               data.get('skills'), data.get('experience'), data.get('awards'),
               data.get('template_id', 1), session['user_id']))
     else:
         cursor.execute('''
             INSERT INTO resumes (user_id, name, objective, education, skills, experience, awards, template_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (session['user_id'], data.get('name'), data.get('objective'),
               data.get('education'), data.get('skills'), data.get('experience'),
               data.get('awards'), data.get('template_id', 1)))
@@ -660,7 +659,7 @@ def get_articles():
     cursor = conn.cursor()
 
     if category:
-        cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.category = %s ORDER BY a.created_at DESC', (category,))
+        cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.category = ? ORDER BY a.created_at DESC', (category,))
     else:
         cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id ORDER BY a.created_at DESC')
 
@@ -676,8 +675,8 @@ def get_article(id):
     cursor = conn.cursor()
 
     # 增加浏览量
-    cursor.execute('UPDATE articles SET views = views + 1 WHERE id = %s', (id,))
-    cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.id = %s', (id,))
+    cursor.execute('UPDATE articles SET views = views + 1 WHERE id = ?', (id,))
+    cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.id = ?', (id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()
@@ -762,7 +761,7 @@ def submit_assessment():
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO assessments (user_id, type, result, score)
-        VALUES (%s, %s, %s, %s)
+        VALUES (?, ?, ?, ?)
     ''', (session['user_id'], 'holland', result_code, str(scores)))
     conn.commit()
     conn.close()

@@ -5,8 +5,7 @@ Flask 主应用入口
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
-import psycopg2
-import psycopg2.extras
+import psycopg
 import hashlib
 import os
 from datetime import datetime
@@ -19,8 +18,7 @@ CORS(app)
 def get_db():
     """获取数据库连接"""
     database_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(database_url, sslmode='require')
-    conn.cursor_factory = psycopg2.extras.RealDictCursor
+    conn = psycopg.connect(database_url)
     return conn
 
 # ==================== 数据库初始化 ====================

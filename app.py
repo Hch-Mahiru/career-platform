@@ -5,7 +5,8 @@ Flask 主应用入口
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
-import sqlite3
+import psycopg2
+import psycopg2.extras
 import hashlib
 import os
 from datetime import datetime
@@ -14,22 +15,24 @@ app = Flask(__name__)
 app.secret_key = 'career_platform_secret_key_2026'
 CORS(app)
 
-# 数据库文件路径（使用绝对路径）
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', 'career.db')
-
-# 确保 db 目录存在
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+# 获取数据库连接（使用 Railway PostgreSQL）
+def get_db():
+    """获取数据库连接"""
+    database_url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(database_url, sslmode='require')
+    conn.cursor_factory = psycopg2.extras.RealDictCursor
+    return conn
 
 # ==================== 数据库初始化 ====================
 def init_db():
     """初始化数据库，创建所有表"""
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db()
     cursor = conn.cursor()
 
     # 用户表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
             email TEXT,
@@ -38,14 +41,14 @@ def init_db():
             school TEXT,
             major TEXT,
             grade TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
     # 企业表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS companies (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id INTEGER,
             company_name TEXT,
             industry TEXT,
@@ -58,7 +61,7 @@ def init_db():
     # 实习岗位表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS internships (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             company_id INTEGER,
             title TEXT NOT NULL,
             description TEXT,
@@ -68,7 +71,7 @@ def init_db():
             type TEXT,
             deadline DATE,
             status TEXT DEFAULT 'active',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (company_id) REFERENCES companies(id)
         )
     ''')
@@ -76,7 +79,7 @@ def init_db():
     # 简历表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS resumes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id INTEGER,
             name TEXT,
             objective TEXT,
@@ -85,8 +88,8 @@ def init_db():
             experience TEXT,
             awards TEXT,
             template_id INTEGER DEFAULT 1,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -94,11 +97,11 @@ def init_db():
     # 投递记录表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS applications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             student_id INTEGER,
             internship_id INTEGER,
             status TEXT DEFAULT 'pending',
-            applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (student_id) REFERENCES users(id),
             FOREIGN KEY (internship_id) REFERENCES internships(id)
         )
@@ -107,12 +110,12 @@ def init_db():
     # 职业测评表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS assessments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id INTEGER,
             type TEXT,
             result TEXT,
             score TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -120,13 +123,13 @@ def init_db():
     # 经验分享表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id INTEGER,
             title TEXT NOT NULL,
             content TEXT,
             category TEXT,
             views INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
@@ -134,13 +137,13 @@ def init_db():
     # 预约记录表
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS appointments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             student_id INTEGER,
             counselor_id INTEGER,
-            appointment_time DATETIME,
+            appointment_time TIMESTAMP,
             status TEXT DEFAULT 'pending',
             notes TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (student_id) REFERENCES users(id),
             FOREIGN KEY (counselor_id) REFERENCES users(id)
         )
@@ -157,8 +160,9 @@ def hash_password(password):
 
 def get_db():
     """获取数据库连接"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    database_url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(database_url, sslmode='require')
+    conn.cursor_factory = psycopg2.extras.RealDictCursor
     return conn
 
 def insert_sample_data():
@@ -190,7 +194,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO users (username, password, email, phone, role, school, major, grade)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', users)
         print("已插入示例用户")
     else:
@@ -200,7 +204,7 @@ def insert_sample_data():
     if not has_companies:
         cursor.executemany('''
             INSERT INTO companies (user_id, company_name, industry, scale, description)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
         ''', [
             (4, '阿里巴巴', '互联网', '10000+', '全球知名的电子商务和科技公司'),
             (4, '腾讯科技', '互联网', '10000+', '中国领先的互联网增值服务提供商'),
@@ -256,7 +260,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO internships (company_id, title, description, requirements, salary, location, type, deadline)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', internships)
         print("已插入示例实习岗位")
     else:
@@ -422,7 +426,7 @@ def insert_sample_data():
 
         cursor.executemany('''
             INSERT INTO articles (user_id, title, content, category)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
         ''', articles)
         print("已插入示例文章")
     else:
@@ -491,12 +495,12 @@ def api_register():
     try:
         cursor.execute('''
             INSERT INTO users (username, password, email, phone, role, school, major, grade)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', (username, hash_password(password), email, phone, role, school, major, grade))
         conn.commit()
         conn.close()
         return jsonify({'success': True, 'message': '注册成功'})
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         conn.close()
         return jsonify({'success': False, 'message': '用户名已存在'}), 400
 
@@ -572,7 +576,7 @@ def apply_internship():
 
     cursor.execute('''
         INSERT INTO applications (student_id, internship_id)
-        VALUES (?, ?)
+        VALUES (%s, %s)
     ''', (session['user_id'], internship_id))
     conn.commit()
     conn.close()
@@ -632,15 +636,15 @@ def save_resume():
 
     if existing:
         cursor.execute('''
-            UPDATE resumes SET name=?, objective=?, education=?, skills=?, experience=?, awards=?, template_id=?, updated_at=CURRENT_TIMESTAMP
-            WHERE user_id = ?
+            UPDATE resumes SET name=%s, objective=%s, education=%s, skills=%s, experience=%s, awards=%s, template_id=%s, updated_at=CURRENT_TIMESTAMP
+            WHERE user_id = %s
         ''', (data.get('name'), data.get('objective'), data.get('education'),
               data.get('skills'), data.get('experience'), data.get('awards'),
               data.get('template_id', 1), session['user_id']))
     else:
         cursor.execute('''
             INSERT INTO resumes (user_id, name, objective, education, skills, experience, awards, template_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', (session['user_id'], data.get('name'), data.get('objective'),
               data.get('education'), data.get('skills'), data.get('experience'),
               data.get('awards'), data.get('template_id', 1)))
@@ -761,7 +765,7 @@ def submit_assessment():
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO assessments (user_id, type, result, score)
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s)
     ''', (session['user_id'], 'holland', result_code, str(scores)))
     conn.commit()
     conn.close()

@@ -159,8 +159,7 @@ def hash_password(password):
 def get_db():
     """获取数据库连接"""
     database_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(database_url, sslmode='require')
-    conn.cursor_factory = psycopg2.extras.RealDictCursor
+    conn = psycopg.connect(database_url)
     return conn
 
 def insert_sample_data():
@@ -498,7 +497,7 @@ def api_register():
         conn.commit()
         conn.close()
         return jsonify({'success': True, 'message': '注册成功'})
-    except psycopg2.IntegrityError:
+    except psycopg.errors.UniqueViolation:
         conn.close()
         return jsonify({'success': False, 'message': '用户名已存在'}), 400
 

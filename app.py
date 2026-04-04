@@ -166,27 +166,10 @@ def insert_sample_data():
     conn = get_db()
     cursor = conn.cursor()
 
-    # 检查是否已有数据（检查企业表，因为这是第一批插入的数据）
-    cursor.execute("SELECT COUNT(*) FROM companies")
-    count = cursor.fetchone()[0]
-    conn.close()
-
-    # 如果企业数量少于 12 家，说明是旧数据，需要清空重新插入
-    if count > 0 and count < 12:
-        # 清空旧数据
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM applications")
-        cursor.execute("DELETE FROM resumes")
-        cursor.execute("DELETE FROM internships")
-        cursor.execute("DELETE FROM companies")
-        cursor.execute("DELETE FROM users")
-        conn.commit()
+    # 检查是否已有数据
+    cursor.execute("SELECT COUNT(*) FROM internships")
+    if cursor.fetchone()[0] > 0:
         conn.close()
-        return  # 返回后让下次调用时重新插入
-
-    # 如果已经有 12 家企业，说明数据已经存在
-    if count >= 12:
         return
 
     # 插入示例用户

@@ -14,11 +14,8 @@ app = Flask(__name__)
 app.secret_key = 'career_platform_secret_key_2026'
 CORS(app)
 
-# 数据库文件路径
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'career.db')
-
-# 确保 db 目录存在
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+# 数据库文件路径（Railway 使用 /tmp 目录）
+DB_PATH = '/tmp/career.db'
 
 # ==================== 数据库初始化 ====================
 def init_db():

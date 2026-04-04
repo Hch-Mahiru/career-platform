@@ -845,20 +845,16 @@ def profile_page():
 
 # ==================== 应用启动 ====================
 # 在应用启动时初始化数据库
-_initialized = False
-
 def init_app():
-    """应用启动时初始化数据库（只执行一次）"""
-    global _initialized
-    if _initialized:
-        return
-    _initialized = True
-    init_db()
-    insert_sample_data()
+    """应用启动时初始化数据库"""
+    try:
+        init_db()
+        insert_sample_data()
+    except Exception as e:
+        print(f"初始化数据库时出错：{e}")
 
-# Flask 3.0 使用 startup 钩子
-with app.app_context():
-    init_app()
+# 导入时立即初始化（只执行一次）
+init_app()
 
 if __name__ == '__main__':
     # 初始化数据库

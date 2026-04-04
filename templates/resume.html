@@ -6,6 +6,97 @@
     <title>创建简历 - 职引未来</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* 模板预览样式 */
+        .template-preview {
+            min-height: 200px;
+            transition: all 0.3s;
+        }
+
+        /* 简洁模板预览 */
+        .template-simple .template-header {
+            background: #0d6efd !important;
+            text-align: center;
+        }
+
+        /* 商务模板预览 */
+        .template-business .template-header {
+            background: #1a1a2e !important;
+            text-align: center;
+            border-bottom: 3px solid #c9a227;
+        }
+
+        /* 创意模板预览 */
+        .template-creative .template-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* 简历预览区域 */
+        .resume-preview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .resume-preview-content {
+            background: white;
+            margin: 20px auto;
+            max-width: 800px;
+            min-height: 1000px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        /* 简洁模板样式 */
+        .resume-simple .resume-header {
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .resume-simple .section-title {
+            color: #0d6efd;
+            border-left: 4px solid #0d6efd;
+            padding-left: 15px;
+            margin: 25px 0 15px 0;
+        }
+
+        /* 商务模板样式 */
+        .resume-business .resume-header {
+            background: #1a1a2e;
+            color: white;
+            padding: 30px;
+            margin: -40px -40px 30px -40px;
+        }
+        .resume-business .section-title {
+            color: #1a1a2e;
+            border-bottom: 2px solid #c9a227;
+            padding-bottom: 10px;
+        }
+
+        /* 创意模板样式 */
+        .resume-creative .resume-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 0 0 20px 20px;
+        }
+        .resume-creative .section-title {
+            color: #764ba2;
+            background: #f0f0f0;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -26,8 +117,11 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">创建我的简历</h4>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="showPreview()">
+                            📄 预览简历
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-success" id="successMsg" style="display: none;"></div>
@@ -84,25 +178,30 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="form-label">选择模板</label>
-                            <select class="form-select" id="templateId">
-                                <option value="1">简洁模板</option>
-                                <option value="2">商务模板</option>
-                                <option value="3">创意模板</option>
+                            <select class="form-select" id="templateId" onchange="updateTemplatePreview()">
+                                <option value="1">简洁模板 - 适合传统行业</option>
+                                <option value="2">商务模板 - 适合金融/咨询</option>
+                                <option value="3">创意模板 - 适合设计/媒体</option>
                             </select>
                         </div>
-                        <div class="template-preview border rounded p-3 text-center">
-                            <div class="template-box">
-                                <div class="template-header bg-primary text-white p-2">简历</div>
-                                <div class="template-body bg-light p-3">
-                                    <small>基本信息</small><hr>
-                                    <small>教育背景</small><hr>
-                                    <small>技能特长</small><hr>
-                                    <small>实践经历</small>
+                        <div class="template-preview border rounded p-3 text-center" id="templatePreviewBox">
+                            <div class="template-box template-simple">
+                                <div class="template-header text-white p-2">
+                                    <strong>简历</strong>
+                                </div>
+                                <div class="template-body bg-light p-3 text-start">
+                                    <small class="text-muted">姓名 | 求职意向</small>
+                                    <hr class="my-1">
+                                    <small class="text-muted">📚 教育背景</small>
+                                    <hr class="my-1">
+                                    <small class="text-muted">💡 技能特长</small>
+                                    <hr class="my-1">
+                                    <small class="text-muted">💼 实践经历</small>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <h6>简历小贴士</h6>
+                            <h6>📝 简历小贴士</h6>
                             <ul class="small text-muted">
                                 <li>突出与岗位相关的技能</li>
                                 <li>用数据和成果说话</li>
@@ -110,9 +209,27 @@
                                 <li>检查错别字和格式</li>
                             </ul>
                         </div>
+                        <div class="mt-3 alert alert-info">
+                            <strong>💡 模板说明：</strong>
+                            <br>简洁模板：清爽大方，适用于大多数岗位
+                            <br>商务模板：专业稳重，适合金融、咨询等行业
+                            <br>创意模板：个性时尚，适合设计、媒体等创意行业
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 简历预览弹窗 -->
+    <div class="resume-preview" id="resumePreview" onclick="closePreview(event)">
+        <div class="resume-preview-content" id="previewContent">
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('resumePreview').style.display='none'">
+                    ✕ 关闭预览
+                </button>
+            </div>
+            <div id="resumePreviewBody"></div>
         </div>
     </div>
 
@@ -122,7 +239,119 @@
         // 页面加载时检查登录状态
         const user = localStorage.getItem('user');
         if (!user) {
+            alert('请先登录后再创建简历');
             window.location.href = '/login';
+        }
+
+        // 更新模板预览
+        function updateTemplatePreview() {
+            const templateId = document.getElementById('templateId').value;
+            const previewBox = document.getElementById('templatePreviewBox');
+
+            if (templateId === '1') {
+                previewBox.innerHTML = `
+                    <div class="template-box template-simple">
+                        <div class="template-header text-white p-2">
+                            <strong>简历</strong>
+                        </div>
+                        <div class="template-body bg-light p-3 text-start">
+                            <small class="text-muted">姓名 | 求职意向</small>
+                            <hr class="my-1">
+                            <small class="text-muted">📚 教育背景</small>
+                            <hr class="my-1">
+                            <small class="text-muted">💡 技能特长</small>
+                            <hr class="my-1">
+                            <small class="text-muted">💼 实践经历</small>
+                        </div>
+                    </div>
+                `;
+            } else if (templateId === '2') {
+                previewBox.innerHTML = `
+                    <div class="template-box template-business">
+                        <div class="template-header text-white p-2">
+                            <strong>RESUME</strong>
+                        </div>
+                        <div class="template-body bg-light p-3 text-start" style="border-top: 3px solid #c9a227;">
+                            <small class="text-muted">📋 个人信息</small>
+                            <hr class="my-1" style="border-color: #c9a227;">
+                            <small class="text-muted">🎯 求职目标</small>
+                            <hr class="my-1" style="border-color: #c9a227;">
+                            <small class="text-muted">📚 教育经历</small>
+                            <hr class="my-1" style="border-color: #c9a227;">
+                            <small class="text-muted">💼 工作经历</small>
+                        </div>
+                    </div>
+                `;
+            } else if (templateId === '3') {
+                previewBox.innerHTML = `
+                    <div class="template-box template-creative">
+                        <div class="template-header text-white p-2">
+                            <strong>🎨 我的简历</strong>
+                        </div>
+                        <div class="template-body bg-light p-3 text-start" style="border-radius: 0 0 10px 10px;">
+                            <small class="text-muted">👤 我是谁</small>
+                            <hr class="my-1" style="border-color: #764ba2;">
+                            <small class="text-muted">🚀 想做什么</small>
+                            <hr class="my-1" style="border-color: #764ba2;">
+                            <small class="text-muted">✨ 会什么</small>
+                            <hr class="my-1" style="border-color: #764ba2;">
+                            <small class="text-muted">🏆 做过什么</small>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 显示预览
+        function showPreview() {
+            const name = document.getElementById('name').value || '张三';
+            const objective = document.getElementById('objective').value || '求职意向';
+            const education = document.getElementById('education').value || '请填写教育背景';
+            const skills = document.getElementById('skills').value || '请填写技能特长';
+            const experience = document.getElementById('experience').value || '请填写实践经历';
+            const awards = document.getElementById('awards').value || '请填写获奖情况';
+            const templateId = document.getElementById('templateId').value;
+
+            const templateClass = templateId === '1' ? 'resume-simple' :
+                                  templateId === '2' ? 'resume-business' : 'resume-creative';
+
+            document.getElementById('resumePreviewBody').innerHTML = `
+                <div class="${templateClass}">
+                    <div class="resume-header">
+                        <h1 style="margin:0;">${name}</h1>
+                        <p style="margin:10px 0 0 0; opacity: 0.8;">${objective}</p>
+                    </div>
+
+                    <div class="section-title">
+                        <h4>📚 教育背景</h4>
+                    </div>
+                    <p>${education}</p>
+
+                    <div class="section-title">
+                        <h4>💡 技能特长</h4>
+                    </div>
+                    <p>${skills}</p>
+
+                    <div class="section-title">
+                        <h4>💼 实践经历</h4>
+                    </div>
+                    <p style="white-space: pre-line;">${experience}</p>
+
+                    <div class="section-title">
+                        <h4>🏆 获奖情况</h4>
+                    </div>
+                    <p>${awards}</p>
+                </div>
+            `;
+
+            document.getElementById('resumePreview').style.display = 'block';
+        }
+
+        // 关闭预览
+        function closePreview(event) {
+            if (event.target.id === 'resumePreview') {
+                document.getElementById('resumePreview').style.display = 'none';
+            }
         }
 
         // 加载已有简历
@@ -139,9 +368,13 @@
                     document.getElementById('experience').value = resume.experience || '';
                     document.getElementById('awards').value = resume.awards || '';
                     document.getElementById('templateId').value = resume.template_id || 1;
+                    updateTemplatePreview();
+                } else {
+                    updateTemplatePreview();
                 }
             } catch (error) {
                 console.error('加载简历失败');
+                updateTemplatePreview();
             }
         });
 

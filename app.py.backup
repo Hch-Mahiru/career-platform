@@ -161,30 +161,16 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-def insert_sample_data(force=False):
-    """插入示例数据
-    force: 如果为True，强制重新插入数据（先清空旧数据）
-    """
+def insert_sample_data():
+    """插入示例数据"""
     conn = get_db()
     cursor = conn.cursor()
 
-    # 检查是否已有数据（除非强制重新插入）
-    if not force:
-        cursor.execute("SELECT COUNT(*) FROM internships")
-        if cursor.fetchone()[0] > 0:
-            conn.close()
-            return
-    else:
-        # 强制模式：先清空所有示例数据表
-        print("强制模式：清空旧数据并重新插入...")
-        cursor.execute("DELETE FROM articles")
-        cursor.execute("DELETE FROM applications")
-        cursor.execute("DELETE FROM assessments")
-        cursor.execute("DELETE FROM resumes")
-        cursor.execute("DELETE FROM internships")
-        cursor.execute("DELETE FROM companies")
-        cursor.execute("DELETE FROM users WHERE username IN ('admin', 'student1', 'student2', 'hr1')")
-        conn.commit()
+    # 检查是否已有数据
+    cursor.execute("SELECT COUNT(*) FROM internships")
+    if cursor.fetchone()[0] > 0:
+        conn.close()
+        return
 
     # 插入示例用户
     users = [
@@ -842,38 +828,15 @@ def profile_page():
 def before_first_request():
     """应用启动前初始化数据库"""
     init_db()
-    # 检查环境变量，决定是否强制重新插入数据
-    force_reinit = os.environ.get('FORCE_REINIT', 'false').lower() == 'true'
-    insert_sample_data(force=force_reinit)
+    insert_sample_data()
 
 # 注册启动钩子
 app.before_request(before_first_request)
 
-@app.route('/api/reset-data', methods=['POST'])
-def api_reset_data():
-    """手动重置示例数据（需要管理员权限）"""
-    if 'user_id' not in session:
-        return jsonify({'success': False, 'message': '请先登录'}), 401
-
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT role FROM users WHERE id = ?", (session['user_id'],))
-    user = cursor.fetchone()
-    conn.close()
-
-    if not user or user['role'] != 'admin':
-        return jsonify({'success': False, 'message': '需要管理员权限'}), 403
-
-    # 强制重新插入数据
-    insert_sample_data(force=True)
-    return jsonify({'success': True, 'message': '数据重置完成'})
-
 if __name__ == '__main__':
     # 初始化数据库
     init_db()
-    # 检查环境变量，决定是否强制重新插入数据
-    force_reinit = os.environ.get('FORCE_REINIT', 'false').lower() == 'true'
-    insert_sample_data(force=force_reinit)
+    insert_sample_data()
 
     # 获取端口（Railway 使用 PORT 环境变量，本地使用 5000）
     port = int(os.environ.get('PORT', 5000))

@@ -464,7 +464,7 @@ def api_login():
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hash_password(password)))
+    cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, hash_password(password)))
     user = cursor.fetchone()
     conn.close()
 
@@ -544,7 +544,7 @@ def get_internship(id):
         SELECT i.*, c.company_name, c.description as company_desc, c.industry, c.scale
         FROM internships i
         JOIN companies c ON i.company_id = c.id
-        WHERE i.id = ?
+        WHERE i.id = %s
     ''', (id,))
     row = cursor.fetchone()
     conn.close()
@@ -567,7 +567,7 @@ def apply_internship():
 
     # 检查是否已投递
     cursor.execute('''
-        SELECT * FROM applications WHERE student_id = ? AND internship_id = ?
+        SELECT * FROM applications WHERE student_id = %s AND internship_id = %s
     ''', (session['user_id'], internship_id))
 
     if cursor.fetchone():
@@ -596,7 +596,7 @@ def get_my_applications():
         FROM applications a
         JOIN internships i ON a.internship_id = i.id
         JOIN companies c ON i.company_id = c.id
-        WHERE a.student_id = ?
+        WHERE a.student_id = %s
         ORDER BY a.applied_at DESC
     ''', (session['user_id'],))
     rows = cursor.fetchall()
@@ -612,7 +612,7 @@ def get_resume():
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM resumes WHERE user_id = ?', (session['user_id'],))
+    cursor.execute('SELECT * FROM resumes WHERE user_id = %s', (session['user_id'],))
     row = cursor.fetchone()
     conn.close()
 
@@ -631,7 +631,7 @@ def save_resume():
     cursor = conn.cursor()
 
     # 检查是否已有简历
-    cursor.execute('SELECT id FROM resumes WHERE user_id = ?', (session['user_id'],))
+    cursor.execute('SELECT id FROM resumes WHERE user_id = %s', (session['user_id'],))
     existing = cursor.fetchone()
 
     if existing:
@@ -663,7 +663,7 @@ def get_articles():
     cursor = conn.cursor()
 
     if category:
-        cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.category = ? ORDER BY a.created_at DESC', (category,))
+        cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.category = %s ORDER BY a.created_at DESC', (category,))
     else:
         cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id ORDER BY a.created_at DESC')
 
@@ -679,8 +679,8 @@ def get_article(id):
     cursor = conn.cursor()
 
     # 增加浏览量
-    cursor.execute('UPDATE articles SET views = views + 1 WHERE id = ?', (id,))
-    cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.id = ?', (id,))
+    cursor.execute('UPDATE articles SET views = views + 1 WHERE id = %s', (id,))
+    cursor.execute('SELECT a.*, u.username FROM articles a JOIN users u ON a.user_id = u.id WHERE a.id = %s', (id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

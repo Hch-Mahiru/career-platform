@@ -845,12 +845,18 @@ def profile_page():
 
 # ==================== 应用启动 ====================
 # 在应用启动时初始化数据库
+_initialized = False
+
 def before_first_request():
-    """应用启动前初始化数据库"""
+    """应用启动前初始化数据库（只执行一次）"""
+    global _initialized
+    if _initialized:
+        return
+    _initialized = True
     init_db()
     insert_sample_data()
 
-# 注册启动钩子
+# 注册启动钩子（Flask 3.0 改用 before_request + 标志位）
 app.before_request(before_first_request)
 
 if __name__ == '__main__':

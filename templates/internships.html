@@ -20,6 +20,7 @@
                     <li class="nav-item"><a class="nav-link" href="/assessment">职业测评</a></li>
                     <li class="nav-item" id="navProfile" style="display: none;"><a class="nav-link" href="/profile">个人中心</a></li>
                     <li class="nav-item" id="navLogin"><a class="nav-link" href="/login">登录</a></li>
+                    <li class="nav-item" id="navRegister"><a class="nav-link" href="/register">注册</a></li>
                     <li class="nav-item" id="navLogout" style="display: none;"><a class="nav-link" href="#" onclick="logout()">退出</a></li>
                 </ul>
             </div>
@@ -117,26 +118,51 @@
                 return;
             }
 
-            let html = '<div class="list-group">';
-            internships.forEach(item => {
-                html += `
-                    <a href="/internship/${item.id}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">${item.title}</h5>
-                            <span class="text-primary fw-bold">${item.salary}</span>
-                        </div>
-                        <p class="mb-1">
-                            <span class="badge bg-primary">${item.company_name}</span>
-                            <span class="badge bg-secondary">${item.location}</span>
-                            <span class="badge bg-info">${item.type}</span>
-                        </p>
-                        <p class="mb-1 text-muted small">${item.description?.substring(0, 80)}...</p>
-                        <small class="text-muted">截止日期：${item.deadline}</small>
-                    </a>
-                `;
-            });
-            html += '</div>';
-            container.innerHTML = html;
+            try {
+                let html = '<div class="list-group">';
+                internships.forEach(item => {
+                    // 对动态内容进行简单的HTML转义，防止XSS和模板字符串中断
+                    const title = escapeHtml(item.title || '');
+                    const salary = escapeHtml(item.salary || '');
+                    const company = escapeHtml(item.company_name || '');
+                    const location = escapeHtml(item.location || '');
+                    const type = escapeHtml(item.type || '');
+                    const desc = escapeHtml((item.description || '').substring(0, 80));
+                    const deadline = escapeHtml(item.deadline || '');
+
+                    html += `
+                        <a href="/internship/${item.id}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">${title}</h5>
+                                <span class="text-primary fw-bold">${salary}</span>
+                            </div>
+                            <p class="mb-1">
+                                <span class="badge bg-primary">${company}</span>
+                                <span class="badge bg-secondary">${location}</span>
+                                <span class="badge bg-info">${type}</span>
+                            </p>
+                            <p class="mb-1 text-muted small">${desc}...</p>
+                            <small class="text-muted">截止日期：${deadline}</small>
+                        </a>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('渲染岗位列表时出错:', error);
+                container.innerHTML = '<p class="text-danger text-center py-5">加载岗位数据时发生错误，请刷新页面重试</p>';
+            }
+        }
+
+        // 简单的HTML转义函数
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         // 筛选

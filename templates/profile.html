@@ -21,8 +21,10 @@
                     <li class="nav-item"><a class="nav-link" href="/internships">实习岗位</a></li>
                     <li class="nav-item"><a class="nav-link" href="/articles">经验分享</a></li>
                     <li class="nav-item"><a class="nav-link" href="/assessment">职业测评</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/profile">个人中心</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">退出</a></li>
+                    <li class="nav-item" id="navProfile"><a class="nav-link active" href="/profile">个人中心</a></li>
+                    <li class="nav-item" id="navLogin" style="display: none;"><a class="nav-link" href="/login">登录</a></li>
+                    <li class="nav-item" id="navRegister" style="display: none;"><a class="nav-link" href="/register">注册</a></li>
+                    <li class="nav-item" id="navLogout"><a class="nav-link" href="#" onclick="logout()">退出</a></li>
                 </ul>
             </div>
         </div>
@@ -47,6 +49,8 @@
                     <a href="#" class="list-group-item list-group-item-action" data-section="applications">我的投递</a>
                     <a href="#" class="list-group-item list-group-item-action" data-section="resume">我的简历</a>
                     <a href="#" class="list-group-item list-group-item-action" data-section="assessment">测评记录</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="personal_info">个人信息</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="recommendations">智能推荐</a>
                 </div>
             </div>
 
@@ -125,6 +129,108 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 个人信息 -->
+                <div class="section-content" id="personal_info" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">个人信息</div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">完善个人信息有助于获得更精准的岗位推荐</p>
+
+                            <form id="personalInfoForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="school" class="form-label">学校</label>
+                                        <input type="text" class="form-control" id="school" placeholder="请输入所在学校">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="major" class="form-label">专业</label>
+                                        <input type="text" class="form-control" id="major" placeholder="请输入所学专业">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="grade" class="form-label">年级</label>
+                                        <select class="form-select" id="grade">
+                                            <option value="">请选择年级</option>
+                                            <option value="2023">2023级</option>
+                                            <option value="2024">2024级</option>
+                                            <option value="2025">2025级</option>
+                                            <option value="2026">2026级</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">邮箱</label>
+                                        <input type="email" class="form-control" id="email" placeholder="请输入邮箱">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label">电话</label>
+                                        <input type="tel" class="form-control" id="phone" placeholder="请输入电话号码">
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary">保存个人信息</button>
+                                    <button type="button" class="btn btn-outline-secondary ms-2" onclick="loadPersonalInfo()">重置为已保存信息</button>
+                                </div>
+                            </form>
+
+                            <div class="alert alert-success mt-3" id="personalInfoSuccess" style="display: none;"></div>
+                            <div class="alert alert-danger mt-3" id="personalInfoError" style="display: none;"></div>
+                        </div>
+                        <div class="card-footer text-muted small">
+                            个人信息将用于智能推荐算法中的专业匹配和地点匹配
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 智能推荐 -->
+                <div class="section-content" id="recommendations" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>智能岗位推荐</span>
+                                <small class="text-muted">基于您的专业、技能和地点个性化推荐</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <button class="btn btn-outline-primary btn-sm" onclick="loadRecommendations()">
+                                    <span class="refresh-icon">↻</span> 刷新推荐
+                                </button>
+                                <button class="btn btn-outline-info btn-sm ms-2" onclick="explainRecommendations()">
+                                    ℹ️ 推荐原理
+                                </button>
+                            </div>
+
+                            <div id="recommendationsLoading" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">加载中...</span>
+                                </div>
+                                <p class="mt-2">正在为您生成个性化推荐...</p>
+                            </div>
+
+                            <div id="recommendationsList" class="d-none">
+                                <!-- 推荐内容将通过JavaScript动态加载 -->
+                            </div>
+
+                            <div id="noRecommendations" class="text-center py-4 d-none">
+                                <p class="text-muted">暂无推荐，请先完善个人信息和简历</p>
+                                <div class="d-grid gap-2 d-md-block">
+                                    <a href="/resume" class="btn btn-primary">完善简历</a>
+                                    <a href="/assessment" class="btn btn-outline-primary ms-2">完成职业测评</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted small">
+                            推荐算法结合了您的专业、技能、地点偏好等多维度信息
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -199,6 +305,88 @@
                 window.location.href = '/login';
             }
         }
+
+        // 个人信息功能
+        // 加载个人信息
+        async function loadPersonalInfo() {
+            try {
+                const response = await fetch('/api/profile');
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const user = data.data;
+                    document.getElementById('school').value = user.school || '';
+                    document.getElementById('major').value = user.major || '';
+                    document.getElementById('grade').value = user.grade || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('phone').value = user.phone || '';
+
+                    // 更新头像显示
+                    if (user.username) {
+                        document.getElementById('avatarLetter').textContent = user.username[0].toUpperCase();
+                        document.getElementById('userName').textContent = user.username;
+                    }
+                    if (user.school) {
+                        document.getElementById('userSchool').textContent = user.school;
+                    }
+                }
+            } catch (error) {
+                console.error('加载个人信息失败:', error);
+            }
+        }
+
+        // 保存个人信息
+        document.getElementById('personalInfoForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const personalInfo = {
+                school: document.getElementById('school').value,
+                major: document.getElementById('major').value,
+                grade: document.getElementById('grade').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+
+            try {
+                const response = await fetch('/api/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(personalInfo)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('personalInfoSuccess').textContent = '个人信息保存成功！';
+                    document.getElementById('personalInfoSuccess').style.display = 'block';
+                    document.getElementById('personalInfoError').style.display = 'none';
+
+                    // 更新页面显示
+                    if (personalInfo.school) {
+                        document.getElementById('userSchool').textContent = personalInfo.school;
+                    }
+
+                    // 3秒后隐藏成功消息
+                    setTimeout(() => {
+                        document.getElementById('personalInfoSuccess').style.display = 'none';
+                    }, 3000);
+                } else {
+                    document.getElementById('personalInfoError').textContent = `保存失败：${data.message}`;
+                    document.getElementById('personalInfoError').style.display = 'block';
+                    document.getElementById('personalInfoSuccess').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('保存个人信息失败:', error);
+                document.getElementById('personalInfoError').textContent = '保存失败，请检查网络连接';
+                document.getElementById('personalInfoError').style.display = 'block';
+                document.getElementById('personalInfoSuccess').style.display = 'none';
+            }
+        });
+
+        // 页面加载时加载个人信息
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPersonalInfo();
+        });
     </script>
 </body>
 </html>

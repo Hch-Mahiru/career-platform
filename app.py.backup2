@@ -191,16 +191,6 @@ def insert_sample_data(force=False):
         ('admin', hash_password('123456'), 'admin@career.com', '13800138000', 'admin', '系统管理员', '', ''),
         ('student1', hash_password('123456'), 'student1@test.com', '13800138001', 'student', '南京大学', '计算机科学', '2023'),
         ('student2', hash_password('123456'), 'student2@test.com', '13800138002', 'student', '东南大学', '软件工程', '2024'),
-        # 新增学生用户，涵盖不同专业
-        ('student3', hash_password('123456'), 'student3@test.com', '13800138004', 'student', '复旦大学', '金融学', '2023'),
-        ('student4', hash_password('123456'), 'student4@test.com', '13800138005', 'student', '上海交通大学', '机械工程', '2024'),
-        ('student5', hash_password('123456'), 'student5@test.com', '13800138006', 'student', '北京大学', '临床医学', '2025'),
-        ('student6', hash_password('123456'), 'student6@test.com', '13800138007', 'student', '北京外国语大学', '英语', '2023'),
-        ('student7', hash_password('123456'), 'student7@test.com', '13800138008', 'student', '浙江大学', '人工智能', '2024'),
-        ('student8', hash_password('123456'), 'student8@test.com', '13800138009', 'student', '武汉大学', '法学', '2023'),
-        ('student9', hash_password('123456'), 'student9@test.com', '13800138010', 'student', '中山大学', '市场营销', '2024'),
-        ('student10', hash_password('123456'), 'student10@test.com', '13800138011', 'student', '四川大学', '护理学', '2025'),
-        # 企业用户（保持在最后以确保ID固定）
         ('hr1', hash_password('123456'), 'hr@company1.com', '13800138003', 'enterprise', '', '', ''),
     ]
 
@@ -214,18 +204,18 @@ def insert_sample_data(force=False):
         INSERT INTO companies (user_id, company_name, industry, scale, description)
         VALUES (?, ?, ?, ?, ?)
     ''', [
-        (13, '阿里巴巴', '互联网', '10000+', '全球知名的电子商务和科技公司'),
-        (13, '腾讯科技', '互联网', '10000+', '中国领先的互联网增值服务提供商'),
-        (13, '华为技术', '通信', '10000+', '全球领先的信息与通信技术解决方案提供商'),
-        (13, '字节跳动', '互联网', '5000-10000', '全球领先的技术公司，打造多款知名应用'),
-        (13, '百度', '互联网', '10000+', '全球最大的中文搜索引擎'),
-        (13, '中国移动', '通信', '10000+', '中国最大的移动通信运营商'),
-        (13, '中国工商银行', '金融', '10000+', '中国最大的商业银行'),
-        (13, '宝洁中国', '消费品', '1000-5000', '全球最大的日用消费品公司之一'),
-        (13, '四大会计师事务所', '专业服务', '5000-10000', '包括普华永道、德勤、安永、毕马威'),
-        (13, '新东方教育', '教育', '5000-10000', '中国最大的教育培训机构之一'),
-        (13, '万科地产', '房地产', '5000-10000', '中国领先的房地产开发商'),
-        (13, '强生医疗', '医疗', '1000-5000', '全球领先的医疗健康公司'),
+        (4, '阿里巴巴', '互联网', '10000+', '全球知名的电子商务和科技公司'),
+        (4, '腾讯科技', '互联网', '10000+', '中国领先的互联网增值服务提供商'),
+        (4, '华为技术', '通信', '10000+', '全球领先的信息与通信技术解决方案提供商'),
+        (4, '字节跳动', '互联网', '5000-10000', '全球领先的技术公司，打造多款知名应用'),
+        (4, '百度', '互联网', '10000+', '全球最大的中文搜索引擎'),
+        (4, '中国移动', '通信', '10000+', '中国最大的移动通信运营商'),
+        (4, '中国工商银行', '金融', '10000+', '中国最大的商业银行'),
+        (4, '宝洁中国', '消费品', '1000-5000', '全球最大的日用消费品公司之一'),
+        (4, '四大会计师事务所', '专业服务', '5000-10000', '包括普华永道、德勤、安永、毕马威'),
+        (4, '新东方教育', '教育', '5000-10000', '中国最大的教育培训机构之一'),
+        (4, '万科地产', '房地产', '5000-10000', '中国领先的房地产开发商'),
+        (4, '强生医疗', '医疗', '1000-5000', '全球领先的医疗健康公司'),
     ])
 
     # 插入示例实习岗位（多行业）
@@ -237,8 +227,8 @@ def insert_sample_data(force=False):
         (2, 'UI 设计实习生', '负责产品界面设计', '熟练使用 Figma/Sketch，有设计作品集', '200-300 元/天', '广州', '实习', '2026-06-30'),
         (3, '测试开发实习生', '参与自动化测试框架开发', '熟悉 Python/Java，了解测试理论', '200-300 元/天', '南京', '实习', '2026-08-31'),
         (3, '数据分析实习生', '负责业务数据分析与可视化', '熟悉 SQL、Python，了解统计学', '250-350 元/天', '上海', '实习', '2026-07-31'),
-        (13, '内容运营实习生', '负责短视频内容运营', '对热点敏感，有文案能力', '180-280 元/天', '北京', '实习', '2026-06-30'),
-        (13, '算法工程实习生', '参与推荐算法研发', '熟悉机器学习，有 Python/C++ 基础', '300-500 元/天', '北京', '实习', '2026-08-31'),
+        (4, '内容运营实习生', '负责短视频内容运营', '对热点敏感，有文案能力', '180-280 元/天', '北京', '实习', '2026-06-30'),
+        (4, '算法工程实习生', '参与推荐算法研发', '熟悉机器学习，有 Python/C++ 基础', '300-500 元/天', '北京', '实习', '2026-08-31'),
         # 金融/会计类
         (5, '银行柜员实习生', '协助处理银行日常业务', '金融/经济相关专业，细心负责', '150-200 元/天', '上海', '实习', '2026-07-31'),
         (6, '审计助理实习生', '参与财务报表审计工作', '会计/财务专业，熟悉 Office', '200-250 元/天', '北京', '实习', '2026-06-30'),
@@ -651,58 +641,6 @@ def save_resume():
 
     return jsonify({'success': True, 'message': '简历保存成功'})
 
-@app.route('/api/profile', methods=['GET'])
-def get_profile():
-    """获取用户个人信息"""
-    if 'user_id' not in session:
-        return jsonify({'success': False, 'message': '请先登录'}), 401
-
-    user_id = session['user_id']
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT id, username, email, phone, role, school, major, grade FROM users WHERE id = ?', (user_id,))
-    user = cursor.fetchone()
-    conn.close()
-
-    if user:
-        return jsonify({'success': True, 'data': dict(user)})
-    return jsonify({'success': False, 'message': '用户不存在'}), 404
-
-@app.route('/api/profile', methods=['POST'])
-def update_profile():
-    """更新用户个人信息"""
-    if 'user_id' not in session:
-        return jsonify({'success': False, 'message': '请先登录'}), 401
-
-    data = request.json
-    user_id = session['user_id']
-
-    # 允许更新的字段
-    allowed_fields = ['school', 'major', 'grade', 'email', 'phone']
-    update_data = {}
-
-    for field in allowed_fields:
-        if field in data:
-            update_data[field] = data[field]
-
-    if not update_data:
-        return jsonify({'success': False, 'message': '没有可更新的字段'}), 400
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    # 构建更新语句
-    set_clause = ', '.join([f"{field} = ?" for field in update_data.keys()])
-    values = list(update_data.values())
-    values.append(user_id)
-
-    cursor.execute(f'UPDATE users SET {set_clause} WHERE id = ?', values)
-    conn.commit()
-    conn.close()
-
-    return jsonify({'success': True, 'message': '个人信息更新成功'})
-
 @app.route('/api/articles')
 def get_articles():
     """获取文章列表"""
@@ -934,235 +872,48 @@ def api_reset_data():
 
 # 专业到行业的映射关系
 MAJOR_INDUSTRY_MAP = {
-    # 计算机与信息技术类
-    '计算机科学': ['互联网', '软件', '通信', '人工智能', '大数据', '云计算'],
-    '软件工程': ['互联网', '软件', '通信', '人工智能', '大数据'],
-    '网络工程': ['互联网', '通信', '网络安全', '云计算'],
-    '信息安全': ['互联网', '网络安全', '通信', '软件'],
-    '物联网工程': ['互联网', '通信', '硬件', '物联网'],
-    '数字媒体技术': ['互联网', '媒体', '设计', '游戏', '影视'],
-    '智能科学与技术': ['人工智能', '互联网', '大数据', '软件'],
-    '数据科学与大数据技术': ['大数据', '互联网', '人工智能', '数据分析'],
-    '区块链工程': ['区块链', '互联网', '金融', '软件'],
-    '虚拟现实技术': ['游戏', '影视', '设计', '互联网'],
-
-    # 电子信息与自动化类
-    '电子信息工程': ['通信', '硬件', '互联网', '电子'],
-    '电子科学与技术': ['硬件', '通信', '电子', '半导体'],
-    '通信工程': ['通信', '互联网', '硬件'],
-    '微电子科学与工程': ['硬件', '半导体', '电子', '通信'],
-    '光电信息科学与工程': ['硬件', '通信', '电子', '光学'],
-    '信息工程': ['通信', '互联网', '软件', '硬件'],
-    '自动化': ['制造', '自动化', '机器人', '工业控制'],
-    '机器人工程': ['机器人', '制造', '自动化', '人工智能'],
-
-    # 电气与机械类
-    '电气工程及其自动化': ['电力', '能源', '制造', '自动化'],
-    '机械工程': ['制造', '机械', '汽车', '自动化'],
-    '机械设计制造及其自动化': ['制造', '机械', '汽车', '设计'],
-    '车辆工程': ['汽车', '制造', '机械'],
-    '材料成型及控制工程': ['制造', '材料', '机械'],
-    '过程装备与控制工程': ['制造', '化工', '自动化'],
-    '能源与动力工程': ['能源', '电力', '制造'],
-    '新能源科学与工程': ['能源', '电力', '环保'],
-
-    # 土木与建筑类
-    '土木工程': ['建筑', '房地产', '工程', '土木'],
+    '计算机科学': ['互联网', '通信', '软件'],
+    '软件工程': ['互联网', '通信', '软件'],
+    '电子信息': ['通信', '互联网', '硬件'],
+    '通信工程': ['通信', '互联网'],
+    '人工智能': ['互联网', '人工智能', '大数据'],
+    '数据科学': ['大数据', '互联网', '人工智能'],
+    '数学': ['金融', '教育', '数据分析'],
+    '统计学': ['金融', '数据分析', '互联网'],
+    '金融学': ['金融', '银行', '保险'],
+    '经济学': ['金融', '咨询', '银行'],
+    '会计学': ['会计', '审计', '金融'],
+    '财务管理': ['金融', '会计', '审计'],
+    '市场营销': ['市场', '销售', '广告'],
+    '工商管理': ['管理', '咨询', '市场'],
+    '人力资源管理': ['人力资源', '管理'],
+    '英语': ['教育', '翻译', '外贸'],
+    '日语': ['教育', '翻译', '外贸'],
+    '新闻传播': ['媒体', '广告', '公关'],
+    '广告学': ['广告', '媒体', '市场'],
+    '设计学': ['设计', '广告', '媒体'],
+    '艺术设计': ['设计', '媒体', '广告'],
+    '临床医学': ['医疗', '医药'],
+    '药学': ['医药', '医疗'],
+    '护理学': ['医疗', '护理'],
+    '机械工程': ['制造', '机械', '汽车'],
+    '电气工程': ['电力', '制造', '能源'],
+    '土木工程': ['建筑', '房地产', '工程'],
     '建筑学': ['建筑', '房地产', '设计'],
-    '城市规划': ['建筑', '房地产', '政府', '规划'],
-    '风景园林': ['建筑', '设计', '房地产', '园林'],
-    '给排水科学与工程': ['建筑', '市政', '环保'],
-    '建筑环境与能源应用工程': ['建筑', '能源', '环保'],
-    '工程管理': ['建筑', '房地产', '工程', '管理'],
-
-    # 化工与材料类
-    '化学工程与工艺': ['化工', '材料', '制药', '能源'],
-    '制药工程': ['制药', '医药', '化工'],
-    '材料科学与工程': ['材料', '制造', '电子', '化工'],
-    '高分子材料与工程': ['材料', '化工', '制造'],
-    '环境工程': ['环保', '政府', '化工', '能源'],
-    '生物工程': ['生物', '制药', '医药', '食品'],
-
-    # 生物与医学类
-    '生物科学': ['生物', '制药', '医药', '科研'],
-    '生物技术': ['生物', '制药', '医药', '科研'],
-    '临床医学': ['医疗', '医药', '健康'],
-    '口腔医学': ['医疗', '医药', '健康'],
-    '预防医学': ['医疗', '公共卫生', '政府'],
-    '药学': ['医药', '制药', '医疗'],
-    '中药学': ['医药', '制药', '医疗'],
-    '护理学': ['医疗', '护理', '健康'],
-    '医学检验技术': ['医疗', '检验', '医药'],
-    '医学影像技术': ['医疗', '影像', '医药'],
-
-    # 理学类
-    '数学与应用数学': ['金融', '教育', '数据分析', '互联网'],
-    '信息与计算科学': ['互联网', '数据分析', '金融', '软件'],
-    '物理学': ['教育', '科研', '电子', '能源'],
-    '应用物理学': ['电子', '能源', '科研', '制造'],
-    '化学': ['化工', '制药', '材料', '科研'],
-    '应用化学': ['化工', '制药', '材料', '能源'],
-    '地理科学': ['地理', '环保', '政府', '规划'],
-    '大气科学': ['气象', '环保', '政府', '科研'],
-    '海洋科学': ['海洋', '环保', '政府', '科研'],
-    '地球物理学': ['地质', '能源', '环保', '科研'],
-    '地质学': ['地质', '能源', '环保', '科研'],
-    '心理学': ['教育', '医疗', '人力资源', '咨询'],
-    '应用心理学': ['教育', '医疗', '人力资源', '咨询'],
-    '统计学': ['金融', '数据分析', '互联网', '市场'],
-
-    # 经济学类
-    '经济学': ['金融', '咨询', '银行', '政府'],
-    '经济统计学': ['金融', '数据分析', '银行', '咨询'],
-    '财政学': ['政府', '金融', '银行', '税务'],
-    '税收学': ['税务', '会计', '金融', '政府'],
-    '金融学': ['金融', '银行', '保险', '证券'],
-    '金融工程': ['金融', '银行', '证券', '投资'],
-    '保险学': ['保险', '金融', '银行'],
-    '投资学': ['投资', '金融', '证券', '银行'],
-    '国际经济与贸易': ['外贸', '金融', '物流', '电商'],
-
-    # 管理学类
-    '管理科学': ['管理', '咨询', '金融', '制造'],
-    '信息管理与信息系统': ['互联网', '管理', '数据分析', '软件'],
-    '工程管理': ['工程', '建筑', '管理', '房地产'],
-    '工商管理': ['管理', '咨询', '市场', '金融'],
-    '市场营销': ['市场', '销售', '广告', '电商'],
-    '会计学': ['会计', '审计', '金融', '税务'],
-    '财务管理': ['金融', '会计', '审计', '投资'],
-    '人力资源管理': ['人力资源', '管理', '咨询'],
-    '审计学': ['审计', '会计', '金融', '税务'],
-    '资产评估': ['评估', '金融', '房地产', '会计'],
-    '物业管理': ['房地产', '管理', '服务'],
-    '文化产业管理': ['文化', '媒体', '艺术', '旅游'],
-    '旅游管理': ['旅游', '酒店', '文化', '服务'],
-    '酒店管理': ['酒店', '旅游', '服务'],
-    '物流管理': ['物流', '供应链', '电商', '制造'],
-    '采购管理': ['采购', '供应链', '制造', '零售'],
-    '供应链管理': ['供应链', '物流', '制造', '零售'],
-    '电子商务': ['电商', '互联网', '市场', '物流'],
-
-    # 法学类
-    '法学': ['法律', '政府', '咨询', '金融'],
-    '政治学与行政学': ['政府', '政治', '公共管理'],
-    '社会学': ['社会', '政府', '咨询', '科研'],
-    '社会工作': ['社会', '政府', '非营利组织', '咨询'],
-    '公安学': ['公安', '政府', '法律', '安全'],
-
-    # 教育学类
-    '教育学': ['教育', '培训', '政府', '科研'],
-    '学前教育': ['教育', '培训', '幼儿'],
-    '小学教育': ['教育', '培训', '小学'],
-    '特殊教育': ['教育', '培训', '特殊教育'],
-    '体育教育': ['体育', '教育', '培训'],
-    '运动训练': ['体育', '培训', '健身'],
-
-    # 文学类
-    '汉语言文学': ['教育', '媒体', '出版', '文化'],
-    '汉语国际教育': ['教育', '培训', '文化', '翻译'],
-    '英语': ['教育', '翻译', '外贸', '媒体'],
-    '日语': ['教育', '翻译', '外贸', '媒体'],
-    '法语': ['教育', '翻译', '外贸', '媒体'],
-    '德语': ['教育', '翻译', '外贸', '媒体'],
-    '西班牙语': ['教育', '翻译', '外贸', '媒体'],
-    '阿拉伯语': ['教育', '翻译', '外贸', '媒体'],
-    '翻译': ['翻译', '教育', '外贸', '媒体'],
-    '新闻学': ['媒体', '新闻', '出版', '广告'],
-    '广播电视学': ['媒体', '影视', '广播', '广告'],
-    '广告学': ['广告', '媒体', '市场', '设计'],
-    '传播学': ['媒体', '公关', '广告', '市场'],
-    '编辑出版学': ['出版', '媒体', '文化', '编辑'],
-
-    # 历史学类
-    '历史学': ['教育', '文化', '科研', '政府'],
-    '考古学': ['考古', '文化', '科研', '博物馆'],
-    '文物与博物馆学': ['博物馆', '文化', '旅游', '政府'],
-
-    # 哲学类
-    '哲学': ['教育', '科研', '文化', '咨询'],
-
-    # 艺术学类
-    '艺术设计学': ['设计', '广告', '媒体', '文化'],
-    '视觉传达设计': ['设计', '广告', '媒体', '出版'],
-    '环境设计': ['设计', '建筑', '房地产', '园林'],
-    '产品设计': ['设计', '制造', '产品', '工业设计'],
-    '服装与服饰设计': ['设计', '服装', '时尚', '制造'],
-    '数字媒体艺术': ['设计', '游戏', '影视', '互联网'],
-    '动画': ['动画', '游戏', '影视', '设计'],
-    '音乐学': ['音乐', '教育', '文化', '媒体'],
-    '舞蹈学': ['舞蹈', '教育', '文化', '媒体'],
-    '戏剧影视文学': ['影视', '戏剧', '文化', '媒体'],
-    '广播电视编导': ['影视', '媒体', '广播', '广告'],
-    '播音与主持艺术': ['媒体', '广播', '影视', '主持'],
-    '表演': ['影视', '戏剧', '媒体', '文化'],
-    '导演': ['影视', '戏剧', '媒体', '文化'],
 }
 
 # 技能关键词库
 SKILL_KEYWORDS = {
-    # 技术开发类
-    '前端': ['html', 'css', 'javascript', 'react', 'vue', 'angular', '前端', 'web', 'typescript', 'jquery', 'bootstrap'],
-    '后端': ['python', 'java', 'php', 'node', 'spring', 'django', 'flask', '后端', 'api', 'c++', 'c#', 'go', 'ruby', 'express', 'laravel'],
-    '数据库': ['mysql', 'sql', 'mongodb', 'redis', '数据库', 'oracle', 'postgresql', 'sqlite', 'nosql', '数据库设计'],
-    '移动端': ['android', 'ios', 'flutter', 'react native', '移动端', 'app', 'swift', 'kotlin', 'java android', 'objective-c'],
-    '游戏开发': ['unity', 'unreal', '游戏开发', 'cocos', '游戏引擎', '3d建模'],
-    '嵌入式': ['嵌入式', '单片机', 'arm', 'stm32', 'fpga', '物联网', '硬件开发'],
-    '物联网': ['物联网', 'iot', '传感器', 'zigbee', '蓝牙', 'wifi'],
-
-    # 数据与AI类
-    '数据分析': ['python', 'r', 'sql', 'excel', 'tableau', '数据分析', '数据挖掘', 'power bi', '数据分析师', '数据可视化'],
-    '机器学习': ['python', 'tensorflow', 'pytorch', '机器学习', '深度学习', '人工智能', 'sklearn', 'keras', '神经网络'],
-    '人工智能': ['人工智能', 'ai', '自然语言处理', 'nlp', '计算机视觉', 'cv', '语音识别', '推荐系统'],
-    '大数据': ['hadoop', 'spark', 'hive', 'hbase', '大数据', '分布式计算', '数据仓库'],
-
-    # 云计算与运维类
-    '云计算': ['云计算', 'aws', 'azure', '阿里云', '腾讯云', 'docker', 'kubernetes', 'k8s', '云原生'],
-    '运维': ['运维', 'devops', 'linux', 'shell', 'nginx', 'apache', '监控', '自动化运维', 'ci/cd'],
-    '网络安全': ['网络安全', '渗透测试', '安全', '漏洞', '防火墙', '加密', '信息安全'],
-
-    # 测试与质量保证
-    '测试': ['测试', '自动化测试', 'selenium', 'jmeter', '测试开发', 'qa', '性能测试', '功能测试', '单元测试'],
-    '质量保证': ['质量保证', 'qa', '测试用例', '缺陷管理', '测试计划'],
-
-    # 产品与设计类
-    '产品': ['产品经理', '需求分析', '原型设计', 'axure', '产品', 'prd', '用户调研', '竞品分析'],
-    '交互设计': ['交互设计', 'ux', '用户体验', '用户研究', '可用性测试'],
-    'ui设计': ['ui', '界面设计', '视觉设计', 'photoshop', 'illustrator', 'figma', 'sketch', 'adobe xd'],
-    '平面设计': ['平面设计', '海报设计', 'logo设计', '排版', 'indesign'],
-    '三维设计': ['3d', 'blender', 'maya', '3ds max', '建模', '渲染'],
-
-    # 运营与市场类
-    '运营': ['运营', '用户运营', '活动运营', '内容运营', '新媒体', '社群运营', '产品运营', '数据运营'],
-    '市场营销': ['市场营销', '品牌', '推广', '广告', 'seo', 'sem', '社交媒体', '数字营销', '市场策划'],
-    '新媒体': ['新媒体', '微信公众号', '微博', '抖音', '小红书', 'b站', '内容创作', '短视频'],
-    '电商运营': ['电商', '淘宝', '京东', '拼多多', '店铺运营', '直播带货', '跨境电商'],
-
-    # 项目管理与办公
-    '项目管理': ['项目管理', 'pmp', '敏捷', 'scrum', '项目计划', '风险管理', '团队管理'],
-    '办公软件': ['office', 'word', 'excel', 'ppt', 'powerpoint', 'wps', '办公自动化', 'visio'],
-    '文档编写': ['文档编写', '技术文档', '需求文档', '产品文档', '帮助文档'],
-
-    # 软技能类
-    '沟通能力': ['沟通', '表达能力', '演讲', '汇报', '协调', '谈判'],
-    '团队合作': ['团队合作', '协作', '团队精神', '跨部门合作'],
-    '解决问题': ['解决问题', '分析问题', '逻辑思维', '创新能力'],
-    '领导力': ['领导力', '管理', '团队带领', '决策', '组织能力'],
-    '时间管理': ['时间管理', ' multitasking', '优先级', '效率'],
-
-    # 语言能力
-    '英语': ['英语', 'cet4', 'cet6', '雅思', '托福', '英语读写', '英语口语'],
-    '日语': ['日语', 'jlpt', '日语能力', '日语翻译'],
-    '其他外语': ['法语', '德语', '西班牙语', '韩语', '俄语', '阿拉伯语'],
-
-    # 金融与会计
-    '财务': ['财务', '会计', '审计', '税务', 'cpa', 'acca', '财务报表', '成本控制'],
-    '金融分析': ['金融分析', '投资分析', '风险管理', '证券', '基金', '银行'],
-
-    # 法律与合规
-    '法律': ['法律', '合同法', '知识产权', '公司法', '劳动法', '合规'],
-
-    # 教育与培训
-    '教学': ['教学', '培训', '课程设计', '讲师', '教育', '辅导'],
+    '前端': ['html', 'css', 'javascript', 'react', 'vue', 'angular', '前端', 'web'],
+    '后端': ['python', 'java', 'php', 'node', 'spring', 'django', 'flask', '后端', 'api'],
+    '数据库': ['mysql', 'sql', 'mongodb', 'redis', '数据库', 'oracle'],
+    '移动端': ['android', 'ios', 'flutter', 'react native', '移动端', 'app'],
+    '数据分析': ['python', 'r', 'sql', 'excel', 'tableau', '数据分析', '数据挖掘'],
+    '机器学习': ['python', 'tensorflow', 'pytorch', '机器学习', '深度学习', '人工智能'],
+    '产品': ['产品经理', '需求分析', '原型设计', 'axure', '产品'],
+    '运营': ['运营', '用户运营', '活动运营', '内容运营', '新媒体'],
+    '设计': ['photoshop', 'illustrator', 'figma', 'sketch', 'ui', 'ux', '设计'],
+    '测试': ['测试', '自动化测试', 'selenium', 'jmeter', '测试开发'],
 }
 
 def calculate_match_score(user, internship, user_resume=None):
@@ -1198,187 +949,35 @@ def calculate_match_score(user, internship, user_resume=None):
 
     # 简单地点匹配：同城市加分
     location_keywords = {
-        # 直辖市
-        '北京': ['北京', '京津冀', '华北', '北方'],
-        '上海': ['上海', '长三角', '华东', '东部'],
-        '天津': ['天津', '京津冀', '华北', '北方'],
-        '重庆': ['重庆', '成渝', '西南', '西部'],
-
-        # 广东省（珠三角）
-        '广州': ['广州', '深圳', '珠三角', '广东', '华南', '南方'],
-        '深圳': ['深圳', '广州', '珠三角', '广东', '华南', '南方'],
-        '东莞': ['东莞', '珠三角', '广东', '华南'],
-        '佛山': ['佛山', '珠三角', '广东', '华南'],
-        '珠海': ['珠海', '珠三角', '广东', '华南'],
-        '中山': ['中山', '珠三角', '广东', '华南'],
-
-        # 浙江省（长三角）
-        '杭州': ['杭州', '浙江', '长三角', '华东'],
-        '宁波': ['宁波', '浙江', '长三角', '华东'],
-        '温州': ['温州', '浙江', '长三角', '华东'],
-        '绍兴': ['绍兴', '浙江', '长三角', '华东'],
-
-        # 江苏省（长三角）
-        '南京': ['南京', '江苏', '长三角', '华东'],
-        '苏州': ['苏州', '江苏', '长三角', '华东'],
-        '无锡': ['无锡', '江苏', '长三角', '华东'],
-        '常州': ['常州', '江苏', '长三角', '华东'],
-        '南通': ['南通', '江苏', '长三角', '华东'],
-
-        # 四川省（成渝经济区）
-        '成都': ['成都', '四川', '西南', '成渝', '西部'],
-        '绵阳': ['绵阳', '四川', '西南', '西部'],
-        '宜宾': ['宜宾', '四川', '西南', '西部'],
-
-        # 湖北省（华中）
-        '武汉': ['武汉', '湖北', '华中', '中部'],
-        '宜昌': ['宜昌', '湖北', '华中', '中部'],
-        '襄阳': ['襄阳', '湖北', '华中', '中部'],
-
-        # 陕西省（西北）
-        '西安': ['西安', '陕西', '西北', '西部'],
-        '咸阳': ['咸阳', '陕西', '西北', '西部'],
-
-        # 山东省（华东）
-        '济南': ['济南', '山东', '华东', '北方'],
-        '青岛': ['青岛', '山东', '华东', '北方'],
-        '烟台': ['烟台', '山东', '华东', '北方'],
-        '威海': ['威海', '山东', '华东', '北方'],
-
-        # 辽宁省（东北）
-        '沈阳': ['沈阳', '辽宁', '东北', '北方'],
-        '大连': ['大连', '辽宁', '东北', '北方'],
-        '长春': ['长春', '吉林', '东北', '北方'],
-        '哈尔滨': ['哈尔滨', '黑龙江', '东北', '北方'],
-
-        # 河南省（华中）
-        '郑州': ['郑州', '河南', '华中', '中部'],
-        '洛阳': ['洛阳', '河南', '华中', '中部'],
-
-        # 湖南省（华中）
-        '长沙': ['长沙', '湖南', '华中', '中部'],
-        '株洲': ['株洲', '湖南', '华中', '中部'],
-
-        # 安徽省（华东）
-        '合肥': ['合肥', '安徽', '华东', '中部'],
-        '芜湖': ['芜湖', '安徽', '华东', '中部'],
-
-        # 福建省（华东）
-        '福州': ['福州', '福建', '华东', '东南'],
-        '厦门': ['厦门', '福建', '华东', '东南'],
-        '泉州': ['泉州', '福建', '华东', '东南'],
-
-        # 江西省（华东）
-        '南昌': ['南昌', '江西', '华东', '中部'],
-        '九江': ['九江', '江西', '华东', '中部'],
-
-        # 云南省（西南）
-        '昆明': ['昆明', '云南', '西南', '西部'],
-        '大理': ['大理', '云南', '西南', '西部'],
-
-        # 贵州省（西南）
-        '贵阳': ['贵阳', '贵州', '西南', '西部'],
-        '遵义': ['遵义', '贵州', '西南', '西部'],
-
-        # 广西（华南）
-        '南宁': ['南宁', '广西', '华南', '南方'],
-        '桂林': ['桂林', '广西', '华南', '南方'],
-
-        # 海南省（华南）
-        '海口': ['海口', '海南', '华南', '南方'],
-        '三亚': ['三亚', '海南', '华南', '南方'],
-
-        # 山西省（华北）
-        '太原': ['太原', '山西', '华北', '北方'],
-        '大同': ['大同', '山西', '华北', '北方'],
-
-        # 河北省（华北）
-        '石家庄': ['石家庄', '河北', '华北', '北方'],
-        '保定': ['保定', '河北', '华北', '北方'],
-
-        # 内蒙古（华北）
-        '呼和浩特': ['呼和浩特', '内蒙古', '华北', '北方'],
-
-        # 甘肃省（西北）
-        '兰州': ['兰州', '甘肃', '西北', '西部'],
-
-        # 新疆（西北）
-        '乌鲁木齐': ['乌鲁木齐', '新疆', '西北', '西部'],
-
-        # 宁夏（西北）
-        '银川': ['银川', '宁夏', '西北', '西部'],
-
-        # 青海（西北）
-        '西宁': ['西宁', '青海', '西北', '西部'],
-
-        # 西藏（西南）
-        '拉萨': ['拉萨', '西藏', '西南', '西部'],
+        '北京': ['北京', '京津冀'],
+        '上海': ['上海', '长三角'],
+        '广州': ['广州', '深圳', '珠三角', '广东'],
+        '深圳': ['深圳', '广州', '珠三角', '广东'],
+        '杭州': ['杭州', '浙江', '长三角'],
+        '南京': ['南京', '江苏', '长三角'],
+        '成都': ['成都', '四川', '西南'],
+        '武汉': ['武汉', '湖北', '华中'],
     }
 
-    # 改进的地点匹配算法：四个层级
-    location_score = 0
-
-    # 提取学校和工作地点的关键词
-    school_keywords = []
-    work_keywords = []
-
-    # 找出学校所在地相关的所有关键词
+    location_matched = False
     for city, keywords in location_keywords.items():
         if city in user_school:
-            school_keywords.extend(keywords)
-            break
-    # 如果没找到具体城市，尝试匹配区域
-    if not school_keywords:
+            if any(keyword in internship_location for keyword in keywords):
+                score += 25
+                location_matched = True
+                break
+
+    if not location_matched:
+        # 不同地点但有相关性
         for city, keywords in location_keywords.items():
             if any(keyword in user_school for keyword in keywords):
-                school_keywords.extend(keywords)
-                break
+                if any(keyword in internship_location for keyword in keywords):
+                    score += 15
+                    location_matched = True
+                    break
 
-    # 找出工作地点相关的所有关键词
-    for city, keywords in location_keywords.items():
-        if city in internship_location:
-            work_keywords.extend(keywords)
-            break
-    # 如果没找到具体城市，尝试匹配区域
-    if not work_keywords:
-        for city, keywords in location_keywords.items():
-            if any(keyword in internship_location for keyword in keywords):
-                work_keywords.extend(keywords)
-                break
-
-    # 计算匹配等级
-    if school_keywords and work_keywords:
-        # 检查是否同城市
-        school_cities = [k for k in location_keywords.keys() if k in user_school]
-        work_cities = [k for k in location_keywords.keys() if k in internship_location]
-
-        if school_cities and work_cities:
-            # 检查是否有共同城市
-            common_cities = set(school_cities) & set(work_cities)
-            if common_cities:
-                location_score = 25  # 同城市
-            else:
-                # 检查是否同区域（如都包含"长三角"）
-                common_regions = set(school_keywords) & set(work_keywords)
-                if any(region in ['京津冀', '长三角', '珠三角', '成渝'] for region in common_regions):
-                    location_score = 20  # 同经济区
-                elif any(region in ['华北', '华东', '华南', '华中', '西南', '西北', '东北'] for region in common_regions):
-                    location_score = 15  # 同大区
-                elif any(region in ['北方', '南方', '东部', '西部'] for region in common_regions):
-                    location_score = 10  # 同方位
-                else:
-                    location_score = 5   # 全国范围
-        else:
-            # 没有具体城市信息，检查区域匹配
-            common_regions = set(school_keywords) & set(work_keywords)
-            if common_regions:
-                location_score = 10  # 有共同区域
-            else:
-                location_score = 3   # 无共同区域
-    else:
-        location_score = 3  # 无地点信息
-
-    score += location_score
+    if not location_matched:
+        score += 5  # 基础分
 
     # 3. 技能匹配（25分）
     if user_resume and 'skills' in user_resume:
@@ -1388,7 +987,6 @@ def calculate_match_score(user, internship, user_resume=None):
                                 internship.get('description', '')).lower()
 
         matched_skill_count = 0
-        # 计算技能匹配分数（考虑技能权重）
         for skill_category, keywords in SKILL_KEYWORDS.items():
             # 检查用户是否有该技能
             user_has_skill = any(keyword in user_skills for keyword in keywords)
@@ -1398,32 +996,22 @@ def calculate_match_score(user, internship, user_resume=None):
             if user_has_skill and position_needs_skill:
                 matched_skill_count += 1
 
-        # 改进的评分逻辑：每个匹配技能得8分，最高25分
-        # 同时考虑技能匹配的质量（核心技能权重更高）
-        skill_score = min(25, matched_skill_count * 8)
-
-        # 如果匹配到核心技能（如岗位明确要求的技能），额外加分
-        # 这里简单实现：如果匹配技能数大于0，额外加2分
-        if matched_skill_count > 0:
-            skill_score = min(25, skill_score + 2)
-
-        score += skill_score
+        # 根据匹配的技能数量给分
+        if matched_skill_count >= 3:
+            score += 25
+        elif matched_skill_count == 2:
+            score += 18
+        elif matched_skill_count == 1:
+            score += 10
+        else:
+            score += 5
     else:
-        score += 2  # 无简历信息，基础分较低（鼓励用户完善简历）
+        score += 5  # 无简历信息，基础分
 
-    # 4. 热门度（10分） - 基于真实投递数据
-    application_count = internship.get('application_count', 0)
-    # 使用对数尺度计算热门度分数：log(application_count + 1) * 系数
-    if application_count <= 0:
-        popularity_score = 1  # 基础分
-    elif application_count <= 5:
-        popularity_score = 3  # 较低热度
-    elif application_count <= 10:
-        popularity_score = 5  # 中等热度
-    elif application_count <= 20:
-        popularity_score = 7  # 较高热度
-    else:
-        popularity_score = 10  # 热门岗位
+    # 4. 热门度（10分） - 基于岗位id简单模拟
+    # 实际应用中可以从applications表统计投递次数
+    internship_id = internship.get('id', 0)
+    popularity_score = min(10, internship_id % 11)  # 简单模拟：id越大越新
     score += popularity_score
 
     # 5. 时效性（10分） - 离截止日期越近分数越低
@@ -1448,74 +1036,6 @@ def calculate_match_score(user, internship, user_resume=None):
     # 确保分数在0-100之间
     return min(100, max(0, score))
 
-def get_collaborative_recommendations(user_id, limit=5):
-    """基于协同过滤的推荐：找到相似用户投递的岗位"""
-    conn = get_db()
-    cursor = conn.cursor()
-
-    # 获取当前用户信息
-    cursor.execute("SELECT major, school FROM users WHERE id = ?", (user_id,))
-    current_user = cursor.fetchone()
-    if not current_user:
-        conn.close()
-        return []
-
-    current_major = current_user['major']
-    current_school = current_user['school']
-
-    # 找到相似用户（相同专业或相同学校）
-    similar_users = []
-    if current_major:
-        cursor.execute("SELECT id FROM users WHERE major = ? AND id != ? AND role = 'student' LIMIT 10",
-                      (current_major, user_id))
-        similar_users.extend([row['id'] for row in cursor.fetchall()])
-
-    # 如果相似用户太少，添加相同学校的用户
-    if len(similar_users) < 5 and current_school:
-        cursor.execute("SELECT id FROM users WHERE school LIKE ? AND id != ? AND role = 'student' LIMIT ?",
-                      (f'%{current_school}%', user_id, 10 - len(similar_users)))
-        similar_users.extend([row['id'] for row in cursor.fetchall()])
-
-    if not similar_users:
-        conn.close()
-        return []
-
-    # 获取相似用户投递的岗位（排除当前用户已投递的）
-    placeholders = ','.join(['?'] * len(similar_users))
-    cursor.execute(f'''
-        SELECT DISTINCT a.internship_id, COUNT(a.id) as user_count
-        FROM applications a
-        WHERE a.student_id IN ({placeholders})
-        GROUP BY a.internship_id
-        ORDER BY user_count DESC
-        LIMIT ?
-    ''', similar_users + [limit * 2])  # 获取更多岗位以便筛选
-
-    similar_internship_ids = [row['internship_id'] for row in cursor.fetchall()]
-
-    # 获取当前用户已投递的岗位
-    cursor.execute("SELECT internship_id FROM applications WHERE student_id = ?", (user_id,))
-    applied_ids = [row['internship_id'] for row in cursor.fetchall()]
-
-    # 过滤掉已投递的岗位
-    filtered_ids = [id for id in similar_internship_ids if id not in applied_ids]
-
-    # 获取岗位详细信息
-    recommendations = []
-    if filtered_ids:
-        placeholders = ','.join(['?'] * len(filtered_ids))
-        cursor.execute(f'''
-            SELECT i.*, c.company_name, c.industry, c.scale
-            FROM internships i
-            JOIN companies c ON i.company_id = c.id
-            WHERE i.id IN ({placeholders}) AND i.status = 'active'
-        ''', filtered_ids)
-        recommendations = [dict(row) for row in cursor.fetchall()]
-
-    conn.close()
-    return recommendations[:limit]
-
-
 def get_recommendations_for_user(user_id, limit=10):
     """为用户生成岗位推荐列表"""
     conn = get_db()
@@ -1535,16 +1055,12 @@ def get_recommendations_for_user(user_id, limit=10):
     resume_row = cursor.fetchone()
     user_resume = dict(resume_row) if resume_row else None
 
-    # 获取所有活跃岗位及其投递数量
+    # 获取所有活跃岗位
     cursor.execute('''
-        SELECT i.*, c.company_name, c.industry, c.scale,
-               COUNT(a.id) as application_count
+        SELECT i.*, c.company_name, c.industry, c.scale
         FROM internships i
         JOIN companies c ON i.company_id = c.id
-        LEFT JOIN applications a ON i.id = a.internship_id
         WHERE i.status = 'active'
-        GROUP BY i.id
-        ORDER BY i.created_at DESC
     ''')
     all_internships = [dict(row) for row in cursor.fetchall()]
 
@@ -1575,38 +1091,8 @@ def get_recommendations_for_user(user_id, limit=10):
     # 按匹配分数降序排序
     scored_internships.sort(key=lambda x: x['match_score'], reverse=True)
 
-    # 获取协同过滤推荐
-    collaborative_recs = get_collaborative_recommendations(user_id, limit=limit//2)
-
-    # 合并推荐结果（混合推荐策略）
-    final_recommendations = []
-
-    # 1. 添加基于内容推荐的前70%
-    content_limit = int(limit * 0.7)
-    for rec in scored_internships[:content_limit]:
-        rec['recommendation_type'] = 'content_based'
-        final_recommendations.append(rec)
-
-    # 2. 添加协同过滤推荐（避免重复）
-    added_ids = {rec['id'] for rec in final_recommendations}
-    for rec in collaborative_recs:
-        if rec['id'] not in added_ids and len(final_recommendations) < limit:
-            rec['match_score'] = rec.get('match_score', 60)  # 默认分数
-            rec['recommendation_type'] = 'collaborative'
-            final_recommendations.append(rec)
-
-    # 3. 如果还不够，用更多基于内容的推荐填充
-    if len(final_recommendations) < limit:
-        for rec in scored_internships[content_limit:]:
-            if rec['id'] not in added_ids and len(final_recommendations) < limit:
-                rec['recommendation_type'] = 'content_based'
-                final_recommendations.append(rec)
-
-    # 按匹配分数重新排序
-    final_recommendations.sort(key=lambda x: x['match_score'], reverse=True)
-
     # 返回前limit个推荐
-    return final_recommendations[:limit]
+    return scored_internships[:limit]
 
 def generate_recommendation_reasons(user, internship, user_resume, match_score):
     """生成推荐理由说明"""
